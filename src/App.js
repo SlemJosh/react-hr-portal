@@ -13,7 +13,7 @@ import Login from './Login';
 import Signup from './Signup';
 import HrDashboard from './HrDashboard';
 import EmployeeDashboard from './EmployeeDashboard';
-import AddEmployee from './AddEmployee';
+import AddEmployee from './AddEmployee.js';
 import ViewEmployees from './ViewEmployees';
 import LeaveRequest from './LeaveRequest';
 
