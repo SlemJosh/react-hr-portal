@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { useAuth } from './AuthContext';
+import { Link } from 'react-router-dom';
 
 export default function HrDashboard() {
   const { user, logout } = useAuth();
@@ -14,6 +15,13 @@ export default function HrDashboard() {
       <h2>HR Dashboard</h2>
       <p>Welcome, {user?.name}!</p>
       <p>You are logged in as: {user?.role}</p>
+
+      <nav>
+        <Link to="/add-employee">➕ Add Employee</Link> |{" "}
+        <Link to="/view-employees">📋 View Employees</Link>
+      </nav>
+
+      <br />
       <button onClick={logout}>Logout</button>
     </div>
   );
