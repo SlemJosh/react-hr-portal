@@ -16,6 +16,7 @@ import ProtectedRoute from './routes/ProtectedRoute';
 // Component Pages
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
+import ForgotPassword from './components/auth/ForgotPassword';
 import HRDashboard from './components/dashboard/HRDashboard';
 import EmployeeDashboard from './components/dashboard/EmployeeDashboard';
 import AddEmployee from './components/employee/AddEmployee';
@@ -35,6 +36,7 @@ export default function App() {
             {/* Public Routes */}
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
 
             {/* Protected HR Routes */}
             <Route

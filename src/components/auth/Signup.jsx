@@ -59,8 +59,8 @@ export default function Signup() {
     users.push(formData);
     localStorage.setItem('users', JSON.stringify(users));
 
-    // Auto-login the user
-    login(formData.firstName, formData.role);
+    // Auto-login the user (include email for context)
+    login(formData.firstName, formData.role, formData.email);
 
     // Redirect based on role
     if (formData.role === 'hr') {

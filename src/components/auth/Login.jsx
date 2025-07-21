@@ -3,41 +3,45 @@
 // Description: Login screen to simulate authentication and role selection
 // =======================
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
 
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [name, setName] = useState('');
-  const [role, setRole] = useState('employee');
-  const [error, setError] = useState('');
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("employee");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // Allow login by first name or email
+    // Allow login by first name or email, match role and password
     const user = users.find(
-      (u) => u.firstName.toLowerCase() === name.toLowerCase() || u.email.toLowerCase() === name.toLowerCase()
+      (u) =>
+        (u.firstName.toLowerCase() === name.toLowerCase() ||
+          u.email.toLowerCase() === name.toLowerCase()) &&
+        u.role === role
     );
 
     if (!user) {
-      setError('User not found. Please sign up first.');
+      setError("User not found or role mismatch. Please check your info.");
       return;
     }
 
-    if (user.role !== role) {
-      setError(`Role mismatch: This user is registered as "${user.role}"`);
+    if (user.password !== password) {
+      setError("Incorrect password. Please try again.");
       return;
     }
 
     login(user.firstName || user.email, user.role);
-    navigate(user.role === 'hr' ? '/hr' : '/employee');
+    navigate(user.role === "hr" ? "/hr" : "/employee");
   };
 
   return (
@@ -45,7 +49,10 @@ export default function Login() {
       <Row className="justify-content-center">
         <Col md={6}>
           <h2 className="text-center mb-4">Login</h2>
-          <Form onSubmit={handleSubmit} className="p-4 border rounded bg-light shadow">
+          <Form
+            onSubmit={handleSubmit}
+            className="p-4 border rounded bg-light shadow"
+          >
             {error && <Alert variant="danger">{error}</Alert>}
 
             <Form.Group controlId="formName">
@@ -59,9 +66,23 @@ export default function Login() {
               />
             </Form.Group>
 
+            <Form.Group controlId="formPassword" className="mt-3">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </Form.Group>
+
             <Form.Group controlId="formRole" className="mt-3">
               <Form.Label>Select Role</Form.Label>
-              <Form.Select value={role} onChange={(e) => setRole(e.target.value)}>
+              <Form.Select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+              >
                 <option value="employee">Employee</option>
                 <option value="hr">HR</option>
               </Form.Select>
@@ -73,9 +94,15 @@ export default function Login() {
 
             <div className="mt-3 text-center">
               <p>
-                Don't have an account?{' '}
+                Don't have an account?{" "}
                 <a href="/signup" className="link-primary">
                   Sign up here
+                </a>
+              </p>
+
+              <p className="mt-2">
+                <a href="/forgot-password" className="link-secondary">
+                  Forgot your password? Click here
                 </a>
               </p>
             </div>
