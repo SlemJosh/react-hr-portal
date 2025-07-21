@@ -1,5 +1,5 @@
 // =======================
-// AddEmployee.js
+// AddEmployee.jsx
 // Description: Page for HR to add a new employee (placeholder for now)
 // =======================
 
