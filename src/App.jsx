@@ -22,11 +22,15 @@ import AddEmployee from './components/employee/AddEmployee';
 import ViewEmployees from './components/employee/ViewEmployees';
 import LeaveRequest from './components/LeaveRequest';
 
+// Common UI
+import Navbar from './components/common/Navbar';
+
 export default function App() {
   return (
     <AuthProvider>
       <EmployeeProvider>
         <Router>
+          <Navbar /> {/* 🧭 Visible on all routes */}
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Login />} />
