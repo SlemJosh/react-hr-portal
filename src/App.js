@@ -5,17 +5,21 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './AuthContext';
-import ProtectedRoute from './ProtectedRoute';
 
-// Component Pages (to be created)
-import Login from './Login';
-import Signup from './Signup';
-import HrDashboard from './HrDashboard';
-import EmployeeDashboard from './EmployeeDashboard';
-import AddEmployee from './AddEmployee.js';
-import ViewEmployees from './ViewEmployees';
-import LeaveRequest from './LeaveRequest';
+// Context Provider
+import { AuthProvider } from './context/AuthContext';
+
+// Route Guard
+import ProtectedRoute from './routes/ProtectedRoute';
+
+// Component Pages
+import Login from './components/auth/Login';
+import Signup from './components/auth/Signup';
+import HRDashboard from './components/dashboard/HRDashboard';
+import EmployeeDashboard from './components/dashboard/EmployeeDashboard';
+import AddEmployee from './components/employee/AddEmployee';
+import ViewEmployees from './components/employee/ViewEmployees';
+import LeaveRequest from './components/LeaveRequest';
 
 export default function App() {
   return (
@@ -31,7 +35,7 @@ export default function App() {
             path="/hr"
             element={
               <ProtectedRoute allowedRoles={['hr']}>
-                <HrDashboard />
+                <HRDashboard />
               </ProtectedRoute>
             }
           />
