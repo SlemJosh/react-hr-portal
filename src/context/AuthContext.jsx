@@ -5,19 +5,16 @@
 
 import React, { createContext, useContext, useState } from 'react';
 
-// Create the context
 const AuthContext = createContext();
 
-// AuthProvider wraps around the app and stores the login state
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null); // user: { name, role, email? }
+  const [user, setUser] = useState(null);
 
-  // Simulated login function
-  const login = (name, role, email = '') => {
-    setUser({ name, role, email });
+  // ✅ Updated login to handle first + last name separately
+  const login = (firstName, lastName, role, email = '') => {
+    setUser({ firstName, lastName, role, email });
   };
 
-  // Simulated logout function
   const logout = () => setUser(null);
 
   return (
@@ -27,7 +24,6 @@ export function AuthProvider({ children }) {
   );
 }
 
-// Custom hook for easy access to AuthContext
 export function useAuth() {
   return useContext(AuthContext);
 }

@@ -1,6 +1,6 @@
 // =======================
 // Login.jsx
-// Description: Login screen to simulate authentication and role selection
+// Description: Login screen to simulate authentication using email and password
 // =======================
 
 import React, { useState } from "react";
@@ -12,7 +12,7 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("employee");
   const [error, setError] = useState("");
@@ -22,25 +22,20 @@ export default function Login() {
 
     const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // Allow login by first name or email, match role and password
     const user = users.find(
       (u) =>
-        (u.firstName.toLowerCase() === name.toLowerCase() ||
-          u.email.toLowerCase() === name.toLowerCase()) &&
+        u.email.toLowerCase() === email.toLowerCase() &&
+        u.password === password &&
         u.role === role
     );
 
     if (!user) {
-      setError("User not found or role mismatch. Please check your info.");
+      setError("Invalid email, password, or role.");
       return;
     }
 
-    if (user.password !== password) {
-      setError("Incorrect password. Please try again.");
-      return;
-    }
-
-    login(user.firstName || user.email, user.role);
+    // Updated to pass firstName and lastName separately
+    login(user.firstName, user.lastName, user.role, user.email);
     navigate(user.role === "hr" ? "/hr" : "/employee");
   };
 
@@ -55,13 +50,13 @@ export default function Login() {
           >
             {error && <Alert variant="danger">{error}</Alert>}
 
-            <Form.Group controlId="formName">
-              <Form.Label>Name or Email</Form.Label>
+            <Form.Group controlId="formEmail">
+              <Form.Label>Email</Form.Label>
               <Form.Control
-                type="text"
-                placeholder="Enter your name or email"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </Form.Group>
@@ -84,7 +79,7 @@ export default function Login() {
                 onChange={(e) => setRole(e.target.value)}
               >
                 <option value="employee">Employee</option>
-                <option value="hr">HR</option>
+                <option value="hr">Human Resources</option>
               </Form.Select>
             </Form.Group>
 

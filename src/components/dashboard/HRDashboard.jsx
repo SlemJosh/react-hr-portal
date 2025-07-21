@@ -7,6 +7,7 @@ import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col, Button, Card } from 'react-bootstrap';
+import { formatRole } from '../../utils/roleUtils';
 
 export default function HRDashboard() {
   const { user, logout } = useAuth();
@@ -18,8 +19,10 @@ export default function HRDashboard() {
           <Card className="shadow p-4">
             <Card.Body>
               <h2 className="mb-3 text-center">HR Dashboard</h2>
-              <p className="text-center">Welcome, <strong>{user?.name}</strong>!</p>
-              <p className="text-center text-muted">Role: {user?.role}</p>
+              <p className="text-center">
+                Welcome, <strong>{user?.firstName} {user?.lastName}</strong>!
+              </p>
+              <p className="text-center text-muted">Role: {formatRole(user?.role)}</p>
 
               <div className="d-flex justify-content-center gap-3 my-4">
                 <Link to="/add-employee" className="btn btn-success">

@@ -1,11 +1,11 @@
 // =======================
 // Signup.jsx
-// Description: Simulated signup form with localStorage + auto login + redirection
+// Description: Signup with localStorage + login + redirect + spinner
 // =======================
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Signup() {
@@ -21,6 +21,7 @@ export default function Signup() {
   });
 
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -31,43 +32,36 @@ export default function Signup() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const { firstName, lastName, email, password, role } = formData;
 
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.email ||
-      !formData.password
-    ) {
+    if (!firstName || !lastName || !email || !password) {
       setError('Please fill in all fields.');
       return;
     }
 
-    if (formData.password.length < 6) {
+    if (password.length < 6) {
       setError('Password must be at least 6 characters long.');
       return;
     }
 
     const users = JSON.parse(localStorage.getItem('users')) || [];
-
-    const existing = users.find((u) => u.email === formData.email);
+    const existing = users.find((u) => u.email === email);
     if (existing) {
       setError('User with this email already exists.');
       return;
     }
 
-    // Save new user
-    users.push(formData);
+    const newUser = { firstName, lastName, email, password, role };
+    users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
 
-    // Auto-login the user (include email for context)
-    login(formData.firstName, formData.role, formData.email);
+    // Auto-login with a delay to avoid ProtectedRoute race
+    login(firstName, lastName, role, email);
+    setLoading(true);
 
-    // Redirect based on role
-    if (formData.role === 'hr') {
-      navigate('/hr');
-    } else {
-      navigate('/employee');
-    }
+    setTimeout(() => {
+      navigate(role === 'hr' ? '/hr' : '/employee');
+    }, 500); // Small delay to allow AuthContext to update
   };
 
   return (
@@ -75,69 +69,77 @@ export default function Signup() {
       <Row className="justify-content-center">
         <Col md={6}>
           <h2 className="text-center mb-4">Sign Up</h2>
-          <Form onSubmit={handleSubmit} className="p-4 border rounded bg-light shadow">
-            {error && <Alert variant="danger">{error}</Alert>}
 
-            <Form.Group className="mb-3" controlId="formFirstName">
-              <Form.Label>First Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                placeholder="Enter your first name"
-              />
-            </Form.Group>
+          {loading ? (
+            <div className="text-center my-5">
+              <Spinner animation="border" role="status" />
+              <p className="mt-3">Redirecting to your dashboard...</p>
+            </div>
+          ) : (
+            <Form onSubmit={handleSubmit} className="p-4 border rounded bg-light shadow">
+              {error && <Alert variant="danger">{error}</Alert>}
 
-            <Form.Group className="mb-3" controlId="formLastName">
-              <Form.Label>Last Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                placeholder="Enter your last name"
-              />
-            </Form.Group>
+              <Form.Group className="mb-3" controlId="formFirstName">
+                <Form.Label>First Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  placeholder="Enter your first name"
+                />
+              </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter your email"
-              />
-            </Form.Group>
+              <Form.Group className="mb-3" controlId="formLastName">
+                <Form.Label>Last Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  placeholder="Enter your last name"
+                />
+              </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Create a password"
-              />
-            </Form.Group>
+              <Form.Group className="mb-3" controlId="formEmail">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                />
+              </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formRole">
-              <Form.Label>Role</Form.Label>
-              <Form.Select
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-              >
-                <option value="employee">Employee</option>
-                <option value="hr">HR</option>
-              </Form.Select>
-            </Form.Group>
+              <Form.Group className="mb-3" controlId="formPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Create a password"
+                />
+              </Form.Group>
 
-            <Button variant="success" type="submit" className="w-100">
-              Register
-            </Button>
-          </Form>
+              <Form.Group className="mb-3" controlId="formRole">
+                <Form.Label>Role</Form.Label>
+                <Form.Select
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                >
+                  <option value="employee">Employee</option>
+                  <option value="hr">Human Resources</option>
+                </Form.Select>
+              </Form.Group>
+
+              <Button variant="success" type="submit" className="w-100">
+                Register
+              </Button>
+            </Form>
+          )}
         </Col>
       </Row>
     </Container>
