@@ -55,13 +55,27 @@ export default function Signup() {
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
 
-    // Auto-login with a delay to avoid ProtectedRoute race
+    // ⬇️ Also add to employee list if not already there
+    const employees = JSON.parse(localStorage.getItem('employees')) || [];
+    const alreadyInEmployees = employees.find((e) => e.email === email);
+
+    if (!alreadyInEmployees) {
+      const newEmployee = {
+        name: `${firstName} ${lastName}`,
+        email,
+        role,
+        department: 'To Be Assigned',
+      };
+      localStorage.setItem('employees', JSON.stringify([...employees, newEmployee]));
+    }
+
+    // ⬇️ Auto-login with spinner and redirect
     login(firstName, lastName, role, email);
     setLoading(true);
 
     setTimeout(() => {
       navigate(role === 'hr' ? '/hr' : '/employee');
-    }, 500); // Small delay to allow AuthContext to update
+    }, 500);
   };
 
   return (
