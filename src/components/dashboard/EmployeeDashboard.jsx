@@ -1,27 +1,41 @@
 // =======================
-// EmployeeDashboard.js
-// Description: Dashboard page for Employee users
+// EmployeeDashboard.jsx
+// Description: Dashboard page for Employee users (Bootstrap styled)
 // =======================
 
 import React from 'react';
-import { AuthContext, useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { Container, Row, Col, Button, Card } from 'react-bootstrap';
 
 export default function EmployeeDashboard() {
   const { user, logout } = useAuth();
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h2>Employee Dashboard</h2>
-      <p>Welcome, {user?.name}!</p>
-      <p>You are logged in as: {user?.role}</p>
+    <Container className="mt-5">
+      <Row className="justify-content-center">
+        <Col md={8}>
+          <Card className="shadow p-4">
+            <Card.Body>
+              <h2 className="mb-3 text-center">Employee Dashboard</h2>
+              <p className="text-center">Welcome, <strong>{user?.name}</strong>!</p>
+              <p className="text-center text-muted">Role: {user?.role}</p>
 
-      <nav>
-        <Link to="/leave-request">📆 Submit Leave Request</Link>
-      </nav>
+              <div className="d-flex justify-content-center my-4">
+                <Link to="/leave-request" className="btn btn-primary me-3">
+                  📆 Submit Leave Request
+                </Link>
+              </div>
 
-      <br />
-      <button onClick={logout}>Logout</button>
-    </div>
+              <div className="text-center">
+                <Button variant="outline-danger" onClick={logout}>
+                  Logout
+                </Button>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 }
