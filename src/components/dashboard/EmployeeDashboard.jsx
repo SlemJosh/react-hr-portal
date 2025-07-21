@@ -1,24 +1,23 @@
 // =======================
-// HrDashboard.js
-// Description: Dashboard page for HR users
+// EmployeeDashboard.js
+// Description: Dashboard page for Employee users
 // =======================
 
 import React from 'react';
-import { useAuth } from './AuthContext';
+import { useAuth } from '../../AuthContext';
 import { Link } from 'react-router-dom';
 
-export default function HrDashboard() {
+export default function EmployeeDashboard() {
   const { user, logout } = useAuth();
 
   return (
     <div style={{ padding: '2rem' }}>
-      <h2>HR Dashboard</h2>
+      <h2>Employee Dashboard</h2>
       <p>Welcome, {user?.name}!</p>
       <p>You are logged in as: {user?.role}</p>
 
       <nav>
-        <Link to="/add-employee">➕ Add Employee</Link> |{" "}
-        <Link to="/view-employees">📋 View Employees</Link>
+        <Link to="/leave-request">📆 Submit Leave Request</Link>
       </nav>
 
       <br />
