@@ -1,14 +1,17 @@
 // =======================
 // Signup.jsx
-// Description: Simulated signup form with localStorage
+// Description: Simulated signup form with localStorage + auto login + redirection
 // =======================
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Signup() {
   const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -52,10 +55,19 @@ export default function Signup() {
       return;
     }
 
+    // Save new user
     users.push(formData);
     localStorage.setItem('users', JSON.stringify(users));
 
-    navigate('/');
+    // Auto-login the user
+    login(formData.firstName, formData.role);
+
+    // Redirect based on role
+    if (formData.role === 'hr') {
+      navigate('/hr');
+    } else {
+      navigate('/employee');
+    }
   };
 
   return (
