@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // Context Providers
 import { AuthProvider } from './context/AuthContext';
-import { EmployeeProvider } from './context/EmployeeContext'; // ✅ NEW
+import { EmployeeProvider } from './context/EmployeeContext';
 
 // Route Guard
 import ProtectedRoute from './routes/ProtectedRoute';
@@ -25,7 +25,7 @@ import LeaveRequest from './components/LeaveRequest';
 export default function App() {
   return (
     <AuthProvider>
-      <EmployeeProvider> {/* ✅ Wrap everything inside */}
+      <EmployeeProvider>
         <Router>
           <Routes>
             {/* Public Routes */}

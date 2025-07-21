@@ -1,19 +1,17 @@
-// =======================
 // EmployeeContext.jsx
-// Description: Global state for managing employee data
-// =======================
+// Description: Provides global employee list state using React Context + useReducer
 
 import React, { createContext, useReducer, useContext } from 'react';
 
-// 1️⃣ Create Context
+// Create Context
 const EmployeeContext = createContext();
 
-// 2️⃣ Initial State
+// Initial State
 const initialState = {
   employees: []
 };
 
-// 3️⃣ Reducer
+// Reducer
 function employeeReducer(state, action) {
   switch (action.type) {
     case 'ADD_EMPLOYEE':
@@ -26,18 +24,26 @@ function employeeReducer(state, action) {
   }
 }
 
-// 4️⃣ Provider Component
+// Provider Component
 export function EmployeeProvider({ children }) {
   const [state, dispatch] = useReducer(employeeReducer, initialState);
 
+  const addEmployee = (employee) => {
+    dispatch({ type: 'ADD_EMPLOYEE', payload: employee });
+  };
+
   return (
-    <EmployeeContext.Provider value={{ state, dispatch }}>
+    <EmployeeContext.Provider value={{ employees: state.employees, addEmployee }}>
       {children}
     </EmployeeContext.Provider>
   );
 }
 
-// 5️⃣ Hook to use in components
+// Custom Hook
 export function useEmployeeContext() {
-  return useContext(EmployeeContext);
+  const context = useContext(EmployeeContext);
+  if (!context) {
+    throw new Error('useEmployeeContext must be used within an EmployeeProvider');
+  }
+  return context;
 }
