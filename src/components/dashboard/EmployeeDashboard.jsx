@@ -3,7 +3,7 @@
 // Description: Employee Dashboard with modern cancel modal + animated leave request cards
 // =======================
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
 import {
@@ -24,18 +24,19 @@ export default function EmployeeDashboard() {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedRequestId, setSelectedRequestId] = useState(null);
 
-  useEffect(() => {
-    fetchRequests();
-  }, [user?.email]);
-
-  const fetchRequests = () => {
+  // Wrap fetchRequests in useCallback to satisfy useEffect dependency warning
+  const fetchRequests = useCallback(() => {
     const allRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
     const userRequests = allRequests
       .filter((req) => req.employeeEmail === user?.email)
       .reverse();
 
     setRecentRequests(userRequests);
-  };
+  }, [user?.email]);
+
+  useEffect(() => {
+    fetchRequests();
+  }, [fetchRequests]);
 
   const getBadgeVariant = (status) => {
     switch (status) {
@@ -71,30 +72,11 @@ export default function EmployeeDashboard() {
     const updatedRequests = allRequests.filter((req) => req.id !== selectedRequestId);
 
     localStorage.setItem('leaveRequests', JSON.stringify(updatedRequests));
-    toast.success('Leave request cancelled successfully!');
+    toast.warning('Leave request cancelled.');
     setShowCancelModal(false);
     setSelectedRequestId(null);
     fetchRequests();
   };
-
-  const cancelModal = (
-    <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Cancel Leave Request</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        Are you sure you want to cancel this leave request? This action cannot be undone.
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
-          No, Keep It
-        </Button>
-        <Button variant="danger" onClick={confirmCancel}>
-          Yes, Cancel It
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
 
   return (
     <Container className="mt-5">
@@ -114,7 +96,7 @@ export default function EmployeeDashboard() {
                 </Link>
               </div>
 
-              {recentRequests.length > 0 && (
+              {recentRequests.length > 0 ? (
                 <>
                   <h5 className="mt-4">📋 Your Leave Requests</h5>
                   <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
@@ -166,9 +148,7 @@ export default function EmployeeDashboard() {
                     </Row>
                   </div>
                 </>
-              )}
-
-              {recentRequests.length === 0 && (
+              ) : (
                 <div className="text-center mt-4 text-muted">
                   You haven’t submitted any leave requests yet.
                 </div>
@@ -184,7 +164,23 @@ export default function EmployeeDashboard() {
         </Col>
       </Row>
 
-      {cancelModal}
+      {/* Cancel Modal */}
+      <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Cancel Leave Request</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to cancel this leave request? This action cannot be undone.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
+            No, Keep It
+          </Button>
+          <Button variant="danger" onClick={confirmCancel}>
+            Yes, Cancel It
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }

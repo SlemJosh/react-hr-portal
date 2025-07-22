@@ -3,7 +3,7 @@
 // Description: Submit and view employee leave requests (with unique ID per request)
 // =======================
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -20,14 +20,6 @@ export default function LeaveRequest() {
     reason: '',
     notes: '',
   });
-
-  const [userRequests, setUserRequests] = useState([]);
-
-  useEffect(() => {
-    const storedRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
-    const userFiltered = storedRequests.filter(req => req.employeeEmail === loggedInUser.email);
-    setUserRequests(userFiltered);
-  }, [loggedInUser.email]);
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -59,7 +51,7 @@ export default function LeaveRequest() {
     }
 
     const newRequest = {
-      id: uuidv4(), // ✅ Add unique ID
+      id: uuidv4(),
       employeeEmail: loggedInUser.email,
       employeeName: `${loggedInUser.firstName} ${loggedInUser.lastName}`,
       startDate: formData.startDate,
@@ -73,8 +65,6 @@ export default function LeaveRequest() {
     const allRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
     const updatedRequests = [...allRequests, newRequest];
     localStorage.setItem('leaveRequests', JSON.stringify(updatedRequests));
-
-    setUserRequests(prev => [...prev, newRequest]);
 
     toast.success('✅ Leave request submitted!');
     setFormData({
