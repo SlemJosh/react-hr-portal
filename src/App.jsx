@@ -5,6 +5,8 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify'; // ✅ Toast container
+import 'react-toastify/dist/ReactToastify.css';  // ✅ Toast styles
 
 // Context Providers
 import { AuthProvider } from './context/AuthContext';
@@ -31,7 +33,8 @@ export default function App() {
     <AuthProvider>
       <EmployeeProvider>
         <Router>
-          <Navbar /> {/* 🧭 Visible on all routes */}
+          <Navbar />
+          <ToastContainer position="top-center" autoClose={3000} pauseOnHover />
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Login />} />

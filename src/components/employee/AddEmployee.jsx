@@ -1,20 +1,12 @@
 // =======================
 // AddEmployee.jsx
-// Description: Add employee form with confirmation toast
+// Description: Add employee form with confirmation toast (via react-toastify)
 // =======================
 
 import React, { useState } from 'react';
-import {
-  Form,
-  Button,
-  Container,
-  Row,
-  Col,
-  Alert,
-  Toast,
-  ToastContainer,
-} from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'; // ✅ Toastify for consistent feedback
 
 export default function AddEmployee() {
   const navigate = useNavigate();
@@ -30,8 +22,6 @@ export default function AddEmployee() {
   });
 
   const [error, setError] = useState('');
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -64,8 +54,7 @@ export default function AddEmployee() {
     localStorage.setItem('users', JSON.stringify([...users, newUser]));
     localStorage.setItem('employees', JSON.stringify([...employees, newEmployee]));
 
-    setToastMessage(`✅ Added ${firstName} ${lastName} to the team!`);
-    setShowToast(true);
+    toast.success(`✅ Added ${firstName} ${lastName} to the team!`);
 
     setTimeout(() => {
       navigate('/view-employees');
@@ -73,22 +62,7 @@ export default function AddEmployee() {
   };
 
   return (
-    <Container className="mt-5 position-relative">
-      <ToastContainer position="top-end" className="p-3">
-        <Toast
-          bg="success"
-          onClose={() => setShowToast(false)}
-          show={showToast}
-          delay={2000}
-          autohide
-        >
-          <Toast.Header>
-            <strong className="me-auto">HR Portal</strong>
-          </Toast.Header>
-          <Toast.Body className="text-white">{toastMessage}</Toast.Body>
-        </Toast>
-      </ToastContainer>
-
+    <Container className="mt-5">
       <Row className="justify-content-center">
         <Col md={8}>
           <h2 className="text-center mb-4">Add New Employee</h2>
@@ -181,3 +155,4 @@ export default function AddEmployee() {
     </Container>
   );
 }
+
