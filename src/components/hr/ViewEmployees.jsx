@@ -1,6 +1,6 @@
 // =======================
 // ViewEmployees.jsx
-// Description: Card view with modal editing + styled info badges
+// Description: Card view with modal editing + styled info badges + pending leave requests
 // =======================
 
 import React, { useState } from 'react';
@@ -13,6 +13,15 @@ export default function ViewEmployees() {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [editForm, setEditForm] = useState({});
+
+  // -- NEW: Get all leave requests from localStorage --
+  const leaveRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
+
+  // -- NEW: Helper for pending count per employee --
+  const getPendingCount = (email) =>
+    leaveRequests.filter(
+      (req) => req.employeeEmail === email && req.status === 'Pending'
+    ).length;
 
   const handleClose = () => {
     setShowModal(false);
@@ -37,7 +46,7 @@ export default function ViewEmployees() {
 
   return (
     <Container className="mt-4">
-      <h2 className="mb-4">Employee Directory</h2>
+      <h2 className="mb-4 text-center">Employee Directory</h2>
 
       {employees.length === 0 ? (
         <p>No employees added yet.</p>
@@ -76,7 +85,13 @@ export default function ViewEmployees() {
                       <strong>Role:</strong>{' '}
                       {emp.role === 'hr' ? 'Human Resources' : 'Employee'} <br />
                       <strong>Leave Requests:</strong>{' '}
-                      <span className="text-muted">None pending</span>
+                      {getPendingCount(emp.email) > 0 ? (
+                        <Badge bg="warning" text="dark">
+                          {getPendingCount(emp.email)} Pending
+                        </Badge>
+                      ) : (
+                        <span className="text-muted">None pending</span>
+                      )}
                     </small>
                   </Card.Text>
                 </Card.Body>

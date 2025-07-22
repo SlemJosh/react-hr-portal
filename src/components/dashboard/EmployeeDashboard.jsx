@@ -1,6 +1,6 @@
 // =======================
 // EmployeeDashboard.jsx
-// Description: Employee Dashboard with modern cancel modal + animated leave request cards
+// Description: Employee Dashboard with leave request history and auto-hiding old requests
 // =======================
 
 import React, { useEffect, useState, useCallback } from 'react';
@@ -18,21 +18,48 @@ import {
 import { toast } from 'react-toastify';
 import { formatRole } from '../../utils/roleUtils';
 
+function isWithinLastNDays(dateStr, n) {
+  if (!dateStr) return false;
+  const now = new Date();
+  const target = new Date(dateStr);
+  const diff = now - target;
+  return diff <= n * 24 * 60 * 60 * 1000;
+}
+
+function isFutureOrToday(dateStr) {
+  if (!dateStr) return false;
+  const now = new Date();
+  const target = new Date(dateStr);
+  // Compare end of day
+  now.setHours(23, 59, 59, 999);
+  return target >= now;
+}
+
 export default function EmployeeDashboard() {
   const { user, logout } = useAuth();
   const [recentRequests, setRecentRequests] = useState([]);
+  const [allRequests, setAllRequests] = useState([]);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [selectedRequestId, setSelectedRequestId] = useState(null);
+
+  // Get only current relevant requests for dashboard (pending, approved with future endDate, denied in last 7 days)
+  const filterForDashboard = useCallback((reqs) => {
+    return reqs.filter(req => {
+      if (req.status === 'Pending') return true;
+      if (req.status === 'Approved' && isFutureOrToday(req.endDate)) return true;
+      if (req.status === 'Denied' && isWithinLastNDays(req.endDate, 7)) return true;
+      return false;
+    });
+  }, []);
 
   // Wrap fetchRequests in useCallback to satisfy useEffect dependency warning
   const fetchRequests = useCallback(() => {
-    const allRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
-    const userRequests = allRequests
-      .filter((req) => req.employeeEmail === user?.email)
-      .reverse();
-
-    setRecentRequests(userRequests);
-  }, [user?.email]);
+    const all = JSON.parse(localStorage.getItem('leaveRequests')) || [];
+    const userRequests = all.filter((req) => req.employeeEmail === user?.email).reverse();
+    setAllRequests(userRequests);
+    setRecentRequests(filterForDashboard(userRequests));
+  }, [user?.email, filterForDashboard]);
 
   useEffect(() => {
     fetchRequests();
@@ -68,15 +95,67 @@ export default function EmployeeDashboard() {
   };
 
   const confirmCancel = () => {
-    const allRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
-    const updatedRequests = allRequests.filter((req) => req.id !== selectedRequestId);
-
-    localStorage.setItem('leaveRequests', JSON.stringify(updatedRequests));
+    const all = JSON.parse(localStorage.getItem('leaveRequests')) || [];
+    const updated = all.filter((req) => req.id !== selectedRequestId);
+    localStorage.setItem('leaveRequests', JSON.stringify(updated));
     toast.warning('Leave request cancelled.');
     setShowCancelModal(false);
     setSelectedRequestId(null);
     fetchRequests();
   };
+
+  // --- History Modal ---
+  const historyModal = (
+    <Modal show={showHistoryModal} onHide={() => setShowHistoryModal(false)} size="lg" centered>
+      <Modal.Header closeButton>
+        <Modal.Title>All Leave Request History</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {allRequests.length === 0 ? (
+          <div className="text-muted">No leave requests found.</div>
+        ) : (
+          <div style={{ maxHeight: 450, overflowY: 'auto' }}>
+            {allRequests.map((req) => (
+              <Card
+                className="mb-3 shadow-sm animate__animated animate__fadeIn"
+                key={req.id}
+                style={getCardStyle(req.status)}
+              >
+                <Card.Body>
+                  <div className="d-flex justify-content-between align-items-start">
+                    <div>
+                      <Card.Title>{req.leaveType}</Card.Title>
+                      <Card.Subtitle className="mb-2 text-muted">
+                        {req.startDate} → {req.endDate}
+                      </Card.Subtitle>
+                      <Card.Text className="mb-1">
+                        <strong>Reason:</strong> {req.reason}
+                      </Card.Text>
+                      {req.notes && (
+                        <Card.Text className="mb-2">
+                          <strong>Notes:</strong> {req.notes}
+                        </Card.Text>
+                      )}
+                    </div>
+                    <div className="text-end">
+                      <Badge bg={getBadgeVariant(req.status)} className="fs-6 mb-2">
+                        {req.status}
+                      </Badge>
+                    </div>
+                  </div>
+                </Card.Body>
+              </Card>
+            ))}
+          </div>
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => setShowHistoryModal(false)}>
+          Close
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
 
   return (
     <Container className="mt-5">
@@ -94,11 +173,14 @@ export default function EmployeeDashboard() {
                 <Link to="/leave-request" className="btn btn-primary me-3">
                   📆 Submit Leave Request
                 </Link>
+                <Button variant="outline-secondary" onClick={() => setShowHistoryModal(true)}>
+                  View All History
+                </Button>
               </div>
 
               {recentRequests.length > 0 ? (
                 <>
-                  <h5 className="mt-4">📋 Your Leave Requests</h5>
+                  <h5 className="mt-4">📋 Your Recent Leave Requests</h5>
                   <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
                     <Row className="g-3">
                       {recentRequests.map((req) => (
@@ -150,7 +232,7 @@ export default function EmployeeDashboard() {
                 </>
               ) : (
                 <div className="text-center mt-4 text-muted">
-                  You haven’t submitted any leave requests yet.
+                  You haven’t submitted any recent leave requests.
                 </div>
               )}
 
@@ -181,6 +263,9 @@ export default function EmployeeDashboard() {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {/* History Modal */}
+      {historyModal}
     </Container>
   );
 }

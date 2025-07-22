@@ -3,30 +3,31 @@
 // Description: Main routing configuration with protected routes
 // =======================
 
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify'; // ✅ Toast container
-import 'react-toastify/dist/ReactToastify.css';  // ✅ Toast styles
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify"; // ✅ Toast container
+import "react-toastify/dist/ReactToastify.css"; // ✅ Toast styles
 
 // Context Providers
-import { AuthProvider } from './context/AuthContext';
-import { EmployeeProvider } from './context/EmployeeContext';
+import { AuthProvider } from "./context/AuthContext";
+import { EmployeeProvider } from "./context/EmployeeContext";
 
 // Route Guard
-import ProtectedRoute from './routes/ProtectedRoute';
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 // Component Pages
-import Login from './components/auth/Login';
-import Signup from './components/auth/Signup';
-import ForgotPassword from './components/auth/ForgotPassword';
-import HRDashboard from './components/dashboard/HRDashboard';
-import EmployeeDashboard from './components/dashboard/EmployeeDashboard';
-import AddEmployee from './components/employee/AddEmployee';
-import ViewEmployees from './components/employee/ViewEmployees';
-import LeaveRequest from './components/LeaveRequest';
+import Login from "./components/auth/Login";
+import Signup from "./components/auth/Signup";
+import ForgotPassword from "./components/auth/ForgotPassword";
+import HRDashboard from "./components/dashboard/HRDashboard";
+import EmployeeDashboard from "./components/dashboard/EmployeeDashboard";
+import AddEmployee from "./components/hr/AddEmployee";
+import ViewEmployees from "./components/hr/ViewEmployees";
+import LeaveRequestForm from "./components/employee/LeaveRequestForm";
+import LeaveRequests from "./components/hr/LeaveRequests"; // ✅ NEW
 
 // Common UI
-import Navbar from './components/common/Navbar';
+import Navbar from "./components/common/Navbar";
 
 export default function App() {
   return (
@@ -45,7 +46,7 @@ export default function App() {
             <Route
               path="/hr"
               element={
-                <ProtectedRoute allowedRoles={['hr']}>
+                <ProtectedRoute allowedRoles={["hr"]}>
                   <HRDashboard />
                 </ProtectedRoute>
               }
@@ -53,7 +54,7 @@ export default function App() {
             <Route
               path="/add-employee"
               element={
-                <ProtectedRoute allowedRoles={['hr']}>
+                <ProtectedRoute allowedRoles={["hr"]}>
                   <AddEmployee />
                 </ProtectedRoute>
               }
@@ -61,8 +62,16 @@ export default function App() {
             <Route
               path="/view-employees"
               element={
-                <ProtectedRoute allowedRoles={['hr']}>
+                <ProtectedRoute allowedRoles={["hr"]}>
                   <ViewEmployees />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/leave-requests"
+              element={
+                <ProtectedRoute allowedRoles={["hr"]}>
+                  <LeaveRequests />
                 </ProtectedRoute>
               }
             />
@@ -71,7 +80,7 @@ export default function App() {
             <Route
               path="/employee"
               element={
-                <ProtectedRoute allowedRoles={['employee']}>
+                <ProtectedRoute allowedRoles={["employee"]}>
                   <EmployeeDashboard />
                 </ProtectedRoute>
               }
@@ -79,8 +88,8 @@ export default function App() {
             <Route
               path="/leave-request"
               element={
-                <ProtectedRoute allowedRoles={['employee']}>
-                  <LeaveRequest />
+                <ProtectedRoute allowedRoles={["employee"]}>
+                  <LeaveRequestForm />
                 </ProtectedRoute>
               }
             />

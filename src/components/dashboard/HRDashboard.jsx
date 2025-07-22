@@ -24,12 +24,15 @@ export default function HRDashboard() {
               </p>
               <p className="text-center text-muted">Role: {formatRole(user?.role)}</p>
 
-              <div className="d-flex justify-content-center gap-3 my-4">
+              <div className="d-flex justify-content-center gap-3 my-4 flex-wrap">
                 <Link to="/add-employee" className="btn btn-success">
                   ➕ Add Employee
                 </Link>
                 <Link to="/view-employees" className="btn btn-info text-white">
                   📋 View Employees
+                </Link>
+                <Link to="/leave-requests" className="btn btn-warning text-dark">
+                  🗂️ View Leave Requests
                 </Link>
               </div>
 

@@ -3,28 +3,28 @@
 // Description: Submit and view employee leave requests (with unique ID per request)
 // =======================
 
-import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid'; // ✅ Unique ID generator
+import React, { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid"; // ✅ Unique ID generator
 
 export default function LeaveRequest() {
   const { user: loggedInUser } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    startDate: '',
-    endDate: '',
-    leaveType: 'Vacation',
-    reason: '',
-    notes: '',
+    startDate: "",
+    endDate: "",
+    leaveType: "Vacation",
+    reason: "",
+    notes: "",
   });
 
   const handleChange = (e) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -32,7 +32,7 @@ export default function LeaveRequest() {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(0, 0, 0, 0);
-    return tomorrow.toISOString().split('T')[0];
+    return tomorrow.toISOString().split("T")[0];
   };
 
   const isAtLeast24HoursOut = (dateStr) => {
@@ -46,7 +46,7 @@ export default function LeaveRequest() {
     e.preventDefault();
 
     if (!isAtLeast24HoursOut(formData.startDate)) {
-      toast.error('🚫 Start date must be at least 24 hours in the future!');
+      toast.error("🚫 Start date must be at least 24 hours in the future!");
       return;
     }
 
@@ -59,30 +59,35 @@ export default function LeaveRequest() {
       leaveType: formData.leaveType,
       reason: formData.reason,
       notes: formData.notes,
-      status: 'Pending'
+      status: "Pending",
     };
 
-    const allRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
+    const allRequests = JSON.parse(localStorage.getItem("leaveRequests")) || [];
     const updatedRequests = [...allRequests, newRequest];
-    localStorage.setItem('leaveRequests', JSON.stringify(updatedRequests));
+    localStorage.setItem("leaveRequests", JSON.stringify(updatedRequests));
 
-    toast.success('✅ Leave request submitted!');
+    toast.success("✅ Leave request submitted!");
     setFormData({
-      startDate: '',
-      endDate: '',
-      leaveType: 'Vacation',
-      reason: '',
-      notes: '',
+      startDate: "",
+      endDate: "",
+      leaveType: "Vacation",
+      reason: "",
+      notes: "",
     });
 
-    setTimeout(() => navigate('/employee'), 800);
+    setTimeout(() => navigate("/employee"), 800);
   };
 
   return (
     <div className="container py-4">
-      <h2 id="leaveForm" className="mb-4">Submit New Leave Request</h2>
+      <h2 id="leaveForm" className="mb-4">
+        Submit New Leave Request
+      </h2>
 
-      <form onSubmit={handleSubmit} className="border p-4 rounded shadow-sm bg-light mb-5">
+      <form
+        onSubmit={handleSubmit}
+        className="border p-4 rounded shadow-sm bg-light mb-5"
+      >
         <div className="mb-3">
           <label className="form-label">Start Date</label>
           <input
@@ -141,7 +146,9 @@ export default function LeaveRequest() {
             onChange={handleChange}
           />
         </div>
-        <button type="submit" className="btn btn-success">Submit Request</button>
+        <button type="submit" className="btn btn-success">
+          Submit Request
+        </button>
       </form>
     </div>
   );
