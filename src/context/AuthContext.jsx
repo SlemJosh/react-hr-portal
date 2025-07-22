@@ -1,6 +1,6 @@
 // =======================
 // AuthContext.js
-// Description: Provides authentication and role-based login context for the app.
+// Description: Provides authentication and role-based login context for the app with persistence
 // =======================
 
 import React, { createContext, useContext, useState } from 'react';
@@ -8,14 +8,24 @@ import React, { createContext, useContext, useState } from 'react';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  // Initialize user from localStorage if available
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem('loggedInUser');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
-  // ✅ Updated login to handle first + last name separately
+  // Login updates state and localStorage
   const login = (firstName, lastName, role, email = '') => {
-    setUser({ firstName, lastName, role, email });
+    const userData = { firstName, lastName, role, email };
+    setUser(userData);
+    localStorage.setItem('loggedInUser', JSON.stringify(userData));
   };
 
-  const logout = () => setUser(null);
+  // Logout clears state and localStorage
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('loggedInUser');
+  };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>

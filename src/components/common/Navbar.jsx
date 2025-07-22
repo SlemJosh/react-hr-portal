@@ -1,6 +1,6 @@
 // ============================
 // Navbar.jsx
-// Description: Dynamic Navbar with auth-aware links
+// Description: Navbar with centered role links and right-aligned user info/logout
 // ============================
 
 import React from 'react';
@@ -18,15 +18,32 @@ export default function AppNavbar() {
     navigate('/');
   };
 
+  const brandLink = user ? (user.role === 'hr' ? '/hr' : '/employee') : '/';
+
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
-      <Container>
-        <Navbar.Brand href="/">HR Portal</Navbar.Brand>
-        <Nav className="ms-auto">
+      <Container className="d-flex justify-content-between align-items-center">
+        <Navbar.Brand href={brandLink}>HR Portal</Navbar.Brand>
+
+        {/* Centered role-specific links */}
+        <Nav className="mx-auto">
+          {user && user.role === 'hr' && (
+            <>
+              <Nav.Link href="/view-employees">Employee List</Nav.Link>
+              <Nav.Link href="/add-employee">Add Employee</Nav.Link>
+            </>
+          )}
+          {user && user.role === 'employee' && (
+            <Nav.Link href="/leave-request">Request Leave</Nav.Link>
+          )}
+        </Nav>
+
+        {/* Right aligned user info + logout */}
+        <Nav className="d-flex align-items-center">
           {user ? (
             <>
-              <Nav.Item className="me-3 text-white">
-                Welcome, <strong>{user.firstName} {user.lastName}</strong> ({formatRole(user.role)})
+              <Nav.Item className="text-white me-3">
+                <strong>{user.firstName} {user.lastName}</strong> ({formatRole(user.role)})
               </Nav.Item>
               <Button variant="outline-light" onClick={handleLogout}>
                 Logout
