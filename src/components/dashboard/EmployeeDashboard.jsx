@@ -1,25 +1,41 @@
 // =======================
 // EmployeeDashboard.jsx
-// Description: Dashboard page for Employee users with full leave history (scrollable)
+// Description: Employee Dashboard with modern cancel modal + animated leave request cards
 // =======================
 
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
-import { Container, Row, Col, Button, Card, Badge } from 'react-bootstrap';
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Card,
+  Badge,
+  Modal
+} from 'react-bootstrap';
+import { toast } from 'react-toastify';
 import { formatRole } from '../../utils/roleUtils';
 
 export default function EmployeeDashboard() {
   const { user, logout } = useAuth();
-  const [userRequests, setUserRequests] = useState([]);
+  const [recentRequests, setRecentRequests] = useState([]);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectedRequestId, setSelectedRequestId] = useState(null);
 
   useEffect(() => {
-    const allRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
-    const filtered = allRequests
-      .filter((req) => req.employeeEmail === user?.email)
-      .reverse(); // Show most recent first
-    setUserRequests(filtered);
+    fetchRequests();
   }, [user?.email]);
+
+  const fetchRequests = () => {
+    const allRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
+    const userRequests = allRequests
+      .filter((req) => req.employeeEmail === user?.email)
+      .reverse();
+
+    setRecentRequests(userRequests);
+  };
 
   const getBadgeVariant = (status) => {
     switch (status) {
@@ -32,10 +48,58 @@ export default function EmployeeDashboard() {
     }
   };
 
+  const getCardStyle = (status) => {
+    switch (status) {
+      case 'Approved':
+        return { borderLeft: '5px solid #198754' };
+      case 'Denied':
+        return { borderLeft: '5px solid #dc3545' };
+      case 'Pending':
+        return { borderLeft: '5px solid #ffc107' };
+      default:
+        return {};
+    }
+  };
+
+  const handleCancelClick = (requestId) => {
+    setSelectedRequestId(requestId);
+    setShowCancelModal(true);
+  };
+
+  const confirmCancel = () => {
+    const allRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
+    const updatedRequests = allRequests.filter((req) => req.id !== selectedRequestId);
+
+    localStorage.setItem('leaveRequests', JSON.stringify(updatedRequests));
+    toast.success('Leave request cancelled successfully!');
+    setShowCancelModal(false);
+    setSelectedRequestId(null);
+    fetchRequests();
+  };
+
+  const cancelModal = (
+    <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Cancel Leave Request</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        Are you sure you want to cancel this leave request? This action cannot be undone.
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
+          No, Keep It
+        </Button>
+        <Button variant="danger" onClick={confirmCancel}>
+          Yes, Cancel It
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+
   return (
     <Container className="mt-5">
       <Row className="justify-content-center">
-        <Col md={8}>
+        <Col md={10}>
           <Card className="shadow p-4">
             <Card.Body>
               <h2 className="mb-3 text-center">Employee Dashboard</h2>
@@ -50,46 +114,61 @@ export default function EmployeeDashboard() {
                 </Link>
               </div>
 
-              {userRequests.length > 0 ? (
+              {recentRequests.length > 0 && (
                 <>
-                  <h5 className="mt-4 mb-2">📋 Your Leave Request History</h5>
-                  <div
-                    className="scroll-container p-2 border rounded"
-                    style={{
-                      maxHeight: '400px',
-                      overflowY: 'auto',
-                      backgroundColor: '#f8f9fa'
-                    }}
-                  >
-                    {userRequests.map((req, idx) => (
-                      <Card className="shadow-sm mb-3" key={idx}>
-                        <Card.Body className="py-3 px-4">
-                          <div className="d-flex justify-content-between align-items-start">
-                            <div>
-                              <Card.Title className="mb-1">{req.leaveType}</Card.Title>
-                              <Card.Subtitle className="mb-2 text-muted">
-                                {req.startDate} → {req.endDate}
-                              </Card.Subtitle>
-                              <Card.Text className="mb-1">
-                                <strong>Reason:</strong>{' '}
-                                {req.reason.length > 60 ? req.reason.slice(0, 60) + '...' : req.reason}
-                              </Card.Text>
-                              {req.notes && (
-                                <Card.Text className="mb-1 text-muted">
-                                  <em>Notes:</em> {req.notes.length > 60 ? req.notes.slice(0, 60) + '...' : req.notes}
-                                </Card.Text>
-                              )}
-                            </div>
-                            <Badge bg={getBadgeVariant(req.status)} className="fs-6 mt-1">
-                              {req.status}
-                            </Badge>
-                          </div>
-                        </Card.Body>
-                      </Card>
-                    ))}
+                  <h5 className="mt-4">📋 Your Leave Requests</h5>
+                  <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                    <Row className="g-3">
+                      {recentRequests.map((req) => (
+                        <Col md={12} key={req.id}>
+                          <Card
+                            className="shadow-sm animate__animated animate__fadeIn"
+                            style={getCardStyle(req.status)}
+                          >
+                            <Card.Body>
+                              <div className="d-flex justify-content-between align-items-start">
+                                <div>
+                                  <Card.Title className="mb-1">{req.leaveType}</Card.Title>
+                                  <Card.Subtitle className="mb-2 text-muted">
+                                    {req.startDate} → {req.endDate}
+                                  </Card.Subtitle>
+                                  <Card.Text className="mb-1">
+                                    <strong>Reason:</strong> {req.reason}
+                                  </Card.Text>
+                                  {req.notes && (
+                                    <Card.Text className="mb-2">
+                                      <strong>Notes:</strong> {req.notes}
+                                    </Card.Text>
+                                  )}
+                                </div>
+                                <div className="text-end">
+                                  <Badge
+                                    bg={getBadgeVariant(req.status)}
+                                    className="fs-6 mb-2"
+                                  >
+                                    {req.status}
+                                  </Badge>
+                                  {req.status === 'Pending' && (
+                                    <Button
+                                      variant="outline-danger"
+                                      size="sm"
+                                      onClick={() => handleCancelClick(req.id)}
+                                    >
+                                      Cancel
+                                    </Button>
+                                  )}
+                                </div>
+                              </div>
+                            </Card.Body>
+                          </Card>
+                        </Col>
+                      ))}
+                    </Row>
                   </div>
                 </>
-              ) : (
+              )}
+
+              {recentRequests.length === 0 && (
                 <div className="text-center mt-4 text-muted">
                   You haven’t submitted any leave requests yet.
                 </div>
@@ -104,6 +183,8 @@ export default function EmployeeDashboard() {
           </Card>
         </Col>
       </Row>
+
+      {cancelModal}
     </Container>
   );
 }
