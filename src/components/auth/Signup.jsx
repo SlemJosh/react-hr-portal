@@ -55,13 +55,14 @@ export default function Signup() {
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
 
-    // ⬇️ Also add to employee list if not already there
+    // ⬇️ Add to employees list with proper fields
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     const alreadyInEmployees = employees.find((e) => e.email === email);
 
     if (!alreadyInEmployees) {
       const newEmployee = {
-        name: `${firstName} ${lastName}`,
+        firstName,
+        lastName,
         email,
         role,
         department: 'To Be Assigned',
@@ -69,7 +70,6 @@ export default function Signup() {
       localStorage.setItem('employees', JSON.stringify([...employees, newEmployee]));
     }
 
-    // ⬇️ Auto-login with spinner and redirect
     login(firstName, lastName, role, email);
     setLoading(true);
 

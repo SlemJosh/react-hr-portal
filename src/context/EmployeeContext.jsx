@@ -31,6 +31,13 @@ function employeeReducer(state, action) {
       localStorage.setItem('employees', JSON.stringify(action.payload));
       return { ...state, employees: action.payload };
     }
+    case 'UPDATE_EMPLOYEE': {
+      const updated = state.employees.map((emp) =>
+        emp.email === action.payload.email ? { ...emp, ...action.payload } : emp
+      );
+      localStorage.setItem('employees', JSON.stringify(updated));
+      return { ...state, employees: updated };
+    }
     default:
       return state;
   }
@@ -40,7 +47,6 @@ function employeeReducer(state, action) {
 export function EmployeeProvider({ children }) {
   const [state, dispatch] = useReducer(employeeReducer, initialState);
 
-  // Ensure localStorage is synced on first render (optional safety net)
   useEffect(() => {
     localStorage.setItem('employees', JSON.stringify(state.employees));
   }, [state.employees]);
@@ -53,8 +59,17 @@ export function EmployeeProvider({ children }) {
     dispatch({ type: 'SET_EMPLOYEES', payload: employeeList });
   };
 
+  const updateEmployee = (updatedData) => {
+    dispatch({ type: 'UPDATE_EMPLOYEE', payload: updatedData });
+  };
+
   return (
-    <EmployeeContext.Provider value={{ employees: state.employees, addEmployee, setEmployees }}>
+    <EmployeeContext.Provider value={{
+      employees: state.employees,
+      addEmployee,
+      setEmployees,
+      updateEmployee
+    }}>
       {children}
     </EmployeeContext.Provider>
   );

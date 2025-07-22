@@ -8,20 +8,29 @@ import React, { createContext, useContext, useState } from 'react';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  // Initialize user from localStorage if available
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem('loggedInUser');
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  // Login updates state and localStorage
   const login = (firstName, lastName, role, email = '') => {
-    const userData = { firstName, lastName, role, email };
+    // 🧠 Find full employee info based on email
+    const employees = JSON.parse(localStorage.getItem('employees')) || [];
+    const matchingEmployee = employees.find(emp => emp.email === email);
+
+    const userData = {
+      firstName,
+      lastName,
+      role,
+      email,
+      department: matchingEmployee?.department || 'To Be Assigned',
+      title: matchingEmployee?.title || '',
+    };
+
     setUser(userData);
     localStorage.setItem('loggedInUser', JSON.stringify(userData));
   };
 
-  // Logout clears state and localStorage
   const logout = () => {
     setUser(null);
     localStorage.removeItem('loggedInUser');

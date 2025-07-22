@@ -1,13 +1,13 @@
 // ============================
 // Navbar.jsx
-// Description: Navbar with centered role links and right-aligned user info/logout
+// Description: Navbar with role-based links and department badge
 // ============================
 
-import React from 'react';
-import { Navbar, Container, Nav, Button } from 'react-bootstrap';
-import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { formatRole } from '../../utils/roleUtils';
+import React from "react";
+import { Navbar, Container, Nav, Button, Badge } from "react-bootstrap";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { getDepartmentColor } from "../../utils/badgeUtils";
 
 export default function AppNavbar() {
   const { user, logout } = useAuth();
@@ -15,10 +15,10 @@ export default function AppNavbar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
 
-  const brandLink = user ? (user.role === 'hr' ? '/hr' : '/employee') : '/';
+  const brandLink = user ? (user.role === "hr" ? "/hr" : "/employee") : "/";
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
@@ -27,13 +27,13 @@ export default function AppNavbar() {
 
         {/* Centered role-specific links */}
         <Nav className="mx-auto">
-          {user && user.role === 'hr' && (
+          {user?.role === "hr" && (
             <>
               <Nav.Link href="/view-employees">Employee List</Nav.Link>
               <Nav.Link href="/add-employee">Add Employee</Nav.Link>
             </>
           )}
-          {user && user.role === 'employee' && (
+          {user?.role === "employee" && (
             <Nav.Link href="/leave-request">Request Leave</Nav.Link>
           )}
         </Nav>
@@ -43,7 +43,17 @@ export default function AppNavbar() {
           {user ? (
             <>
               <Nav.Item className="text-white me-3">
-                <strong>{user.firstName} {user.lastName}</strong> ({formatRole(user.role)})
+                <strong>
+                  {user.firstName} {user.lastName}
+                </strong>{" "}
+                {user.department && (
+                  <Badge
+                    bg={getDepartmentColor(user.department)}
+                    className="ms-2"
+                  >
+                    {user.department}
+                  </Badge>
+                )}
               </Nav.Item>
               <Button variant="outline-light" onClick={handleLogout}>
                 Logout

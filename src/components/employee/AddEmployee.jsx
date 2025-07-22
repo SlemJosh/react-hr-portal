@@ -1,22 +1,35 @@
-// =======================
+// ==============================
 // AddEmployee.jsx
-// Description: Form to add a new employee (HR only)
-// =======================
+// Description: Form to add employee with department dropdown + title
+// ==============================
 
-import React, { useState } from 'react';
-import { useEmployeeContext } from '../../context/EmployeeContext';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { useEmployeeContext } from "../../context/EmployeeContext";
+import { useAuth } from "../../context/AuthContext";
 
 export default function AddEmployee() {
   const { addEmployee } = useEmployeeContext();
-  const navigate = useNavigate();
-
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    role: 'employee',
-    department: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: "employee",
+    department: "IT",
+    title: "",
+    password: "temp1234", // Default password for added employees
   });
+
+  const departments = [
+    "IT",
+    "HR",
+    "Security",
+    "Sales",
+    "Operations",
+    "Finance",
+    "Marketing",
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,86 +38,116 @@ export default function AddEmployee() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const newEmployee = {
+      ...formData,
+      id: Date.now(),
+    };
 
-    // Basic validation
-    if (!formData.name || !formData.email || !formData.department) {
-      alert('Please fill in all fields');
-      return;
-    }
+    // Save employee in employee list
+    addEmployee(newEmployee);
 
-    // Add employee to context
-    addEmployee(formData);
-
-    // Optional: reset form or redirect
-    setFormData({
-      name: '',
-      email: '',
-      role: 'employee',
-      department: '',
+    // Save user login credentials
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    users.push({
+      email: formData.email,
+      password: formData.password,
+      role: formData.role,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
     });
+    localStorage.setItem("users", JSON.stringify(users));
 
-    navigate('/view-employees'); // Or stay on same page
+    // Reset form
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      role: "employee",
+      department: "IT",
+      title: "",
+      password: "temp1234",
+    });
   };
 
   return (
-    <div className="container mt-5">
+    <Container className="mt-4">
       <h2>Add New Employee</h2>
-      <form onSubmit={handleSubmit} className="mt-4">
+      <Form onSubmit={handleSubmit}>
+        <Row className="mb-3">
+          <Col>
+            <Form.Label>First Name</Form.Label>
+            <Form.Control
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              required
+            />
+          </Col>
+          <Col>
+            <Form.Label>Last Name</Form.Label>
+            <Form.Control
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+            />
+          </Col>
+        </Row>
 
-        <div className="mb-3">
-          <label className="form-label">Name</label>
-          <input
-            name="name"
-            type="text"
-            className="form-control"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="John Doe"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Email</label>
-          <input
+        <Form.Group className="mb-3">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
             name="email"
             type="email"
-            className="form-control"
             value={formData.email}
             onChange={handleChange}
-            placeholder="john@example.com"
+            required
           />
-        </div>
+        </Form.Group>
 
-        <div className="mb-3">
-          <label className="form-label">Role</label>
-          <select
+        <Row className="mb-3">
+          <Col>
+            <Form.Label>Department</Form.Label>
+            <Form.Select
+              name="department"
+              value={formData.department}
+              onChange={handleChange}
+            >
+              {departments.map((dept) => (
+                <option key={dept} value={dept}>
+                  {dept}
+                </option>
+              ))}
+            </Form.Select>
+          </Col>
+
+          <Col>
+            <Form.Label>Job Title</Form.Label>
+            <Form.Control
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              placeholder="Manager, Developer, etc."
+            />
+          </Col>
+        </Row>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Access Role</Form.Label>
+          <Form.Select
             name="role"
-            className="form-select"
             value={formData.role}
             onChange={handleChange}
           >
             <option value="employee">Employee</option>
-            <option value="manager">Manager</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
+            <option value="hr">Human Resources</option>
+          </Form.Select>
+        </Form.Group>
 
-        <div className="mb-3">
-          <label className="form-label">Department</label>
-          <input
-            name="department"
-            type="text"
-            className="form-control"
-            value={formData.department}
-            onChange={handleChange}
-            placeholder="Marketing"
-          />
-        </div>
-
-        <button type="submit" className="btn btn-success">
+        <Button type="submit" variant="success">
           Add Employee
-        </button>
-      </form>
-    </div>
+        </Button>
+      </Form>
+    </Container>
   );
 }
