@@ -1,153 +1,183 @@
-// ==============================
+// =======================
 // AddEmployee.jsx
-// Description: Form to add employee with department dropdown + title
-// ==============================
+// Description: Add employee form with confirmation toast
+// =======================
 
-import React, { useState } from "react";
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import { useEmployeeContext } from "../../context/EmployeeContext";
-import { useAuth } from "../../context/AuthContext";
+import React, { useState } from 'react';
+import {
+  Form,
+  Button,
+  Container,
+  Row,
+  Col,
+  Alert,
+  Toast,
+  ToastContainer,
+} from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 export default function AddEmployee() {
-  const { addEmployee } = useEmployeeContext();
-  const { user } = useAuth();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    role: "employee",
-    department: "IT",
-    title: "",
-    password: "temp1234", // Default password for added employees
+    firstName: '',
+    lastName: '',
+    email: '',
+    role: 'employee',
+    department: 'To Be Assigned',
+    title: '',
+    password: 'temp1234',
   });
 
-  const departments = [
-    "IT",
-    "HR",
-    "Security",
-    "Sales",
-    "Operations",
-    "Finance",
-    "Marketing",
-  ];
+  const [error, setError] = useState('');
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newEmployee = {
-      ...formData,
-      id: Date.now(),
-    };
+    const { firstName, lastName, email, role, department, title, password } = formData;
 
-    // Save employee in employee list
-    addEmployee(newEmployee);
+    if (!firstName || !lastName || !email || !role) {
+      setError('Please fill in all required fields.');
+      return;
+    }
 
-    // Save user login credentials
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    users.push({
-      email: formData.email,
-      password: formData.password,
-      role: formData.role,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-    });
-    localStorage.setItem("users", JSON.stringify(users));
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const employees = JSON.parse(localStorage.getItem('employees')) || [];
 
-    // Reset form
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      role: "employee",
-      department: "IT",
-      title: "",
-      password: "temp1234",
-    });
+    const userExists = users.find((u) => u.email === email);
+    if (userExists) {
+      setError('A user with this email already exists.');
+      return;
+    }
+
+    const newUser = { firstName, lastName, email, role, password };
+    const newEmployee = { firstName, lastName, email, role, department, title };
+
+    localStorage.setItem('users', JSON.stringify([...users, newUser]));
+    localStorage.setItem('employees', JSON.stringify([...employees, newEmployee]));
+
+    setToastMessage(`✅ Added ${firstName} ${lastName} to the team!`);
+    setShowToast(true);
+
+    setTimeout(() => {
+      navigate('/view-employees');
+    }, 1000);
   };
 
   return (
-    <Container className="mt-4">
-      <h2>Add New Employee</h2>
-      <Form onSubmit={handleSubmit}>
-        <Row className="mb-3">
-          <Col>
-            <Form.Label>First Name</Form.Label>
-            <Form.Control
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-            />
-          </Col>
-          <Col>
-            <Form.Label>Last Name</Form.Label>
-            <Form.Control
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-            />
-          </Col>
-        </Row>
+    <Container className="mt-5 position-relative">
+      <ToastContainer position="top-end" className="p-3">
+        <Toast
+          bg="success"
+          onClose={() => setShowToast(false)}
+          show={showToast}
+          delay={2000}
+          autohide
+        >
+          <Toast.Header>
+            <strong className="me-auto">HR Portal</strong>
+          </Toast.Header>
+          <Toast.Body className="text-white">{toastMessage}</Toast.Body>
+        </Toast>
+      </ToastContainer>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
+      <Row className="justify-content-center">
+        <Col md={8}>
+          <h2 className="text-center mb-4">Add New Employee</h2>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <Form onSubmit={handleSubmit} className="border p-4 rounded bg-light shadow">
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>First Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Last Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
 
-        <Row className="mb-3">
-          <Col>
-            <Form.Label>Department</Form.Label>
-            <Form.Select
-              name="department"
-              value={formData.department}
-              onChange={handleChange}
-            >
-              {departments.map((dept) => (
-                <option key={dept} value={dept}>
-                  {dept}
-                </option>
-              ))}
-            </Form.Select>
-          </Col>
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
 
-          <Col>
-            <Form.Label>Job Title</Form.Label>
-            <Form.Control
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              placeholder="Manager, Developer, etc."
-            />
-          </Col>
-        </Row>
+            <Form.Group className="mb-3">
+              <Form.Label>Department</Form.Label>
+              <Form.Select
+                name="department"
+                value={formData.department}
+                onChange={handleChange}
+              >
+                <option>To Be Assigned</option>
+                <option>HR</option>
+                <option>IT</option>
+                <option>Marketing</option>
+                <option>Security</option>
+                <option>Operations</option>
+                <option>Sales</option>
+                <option>Finance</option>
+              </Form.Select>
+            </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Access Role</Form.Label>
-          <Form.Select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-          >
-            <option value="employee">Employee</option>
-            <option value="hr">Human Resources</option>
-          </Form.Select>
-        </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+              />
+            </Form.Group>
 
-        <Button type="submit" variant="success">
-          Add Employee
-        </Button>
-      </Form>
+            <Form.Group className="mb-4">
+              <Form.Label>Role</Form.Label>
+              <Form.Select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+              >
+                <option value="employee">Employee</option>
+                <option value="hr">Human Resources</option>
+              </Form.Select>
+            </Form.Group>
+
+            <Button variant="success" type="submit" className="w-100">
+              Add Employee
+            </Button>
+          </Form>
+        </Col>
+      </Row>
     </Container>
   );
 }

@@ -1,7 +1,4 @@
-// =======================
 // badgeUtils.js
-// Description: Utility to map department names to Bootstrap badge colors
-// =======================
 
 export function getDepartmentColor(department) {
   switch (department) {
@@ -20,6 +17,6 @@ export function getDepartmentColor(department) {
     case 'Finance':
       return 'dark';
     default:
-      return 'light';
+      return 'secondary'; // ← safer default to prevent unreadable badge
   }
 }

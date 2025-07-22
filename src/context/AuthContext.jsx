@@ -14,19 +14,22 @@ export function AuthProvider({ children }) {
   });
 
   const login = (firstName, lastName, role, email = '') => {
-    // 🧠 Find full employee info based on email
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     const matchingEmployee = employees.find(emp => emp.email === email);
+
+    const department = matchingEmployee?.department || (role === 'hr' ? 'HR' : 'To Be Assigned');
+    const title = matchingEmployee?.title || '';
 
     const userData = {
       firstName,
       lastName,
-      role,
       email,
-      department: matchingEmployee?.department || 'To Be Assigned',
-      title: matchingEmployee?.title || '',
+      role,
+      department,
+      title,
     };
 
+    console.log('🔐 Logging in with user:', userData); // Optional debug
     setUser(userData);
     localStorage.setItem('loggedInUser', JSON.stringify(userData));
   };
