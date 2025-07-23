@@ -1,12 +1,15 @@
 // =======================
 // App.jsx
-// Description: Main routing configuration with protected routes
+// Description: Main routing configuration with protected routes + preload defaultData
 // =======================
 
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify"; // ✅ Toast container
 import "react-toastify/dist/ReactToastify.css"; // ✅ Toast styles
+
+// Preload JSON Data
+import { defaultUsers, defaultEmployees, defaultLeaveRequests } from "./data/defaultData";
 
 // Context Providers
 import { AuthProvider } from "./context/AuthContext";
@@ -30,6 +33,22 @@ import LeaveRequests from "./components/hr/LeaveRequests"; // ✅ NEW
 import Navbar from "./components/common/Navbar";
 
 export default function App() {
+  useEffect(() => {
+    const users = localStorage.getItem("users");
+    const employees = localStorage.getItem("employees");
+    const leaveRequests = localStorage.getItem("leaveRequests");
+
+    // Only preload if any are missing (first load or after manual clear)
+    if (!users || !employees || !leaveRequests) {
+      localStorage.setItem("users", JSON.stringify(defaultUsers));
+      localStorage.setItem("employees", JSON.stringify(defaultEmployees));
+      localStorage.setItem("leaveRequests", JSON.stringify(defaultLeaveRequests));
+      console.log("🟢 Default data successfully preloaded into localStorage.");
+    } else {
+      console.log("ℹ️ localStorage already contains user data. Skipping preload.");
+    }
+  }, []);
+
   return (
     <AuthProvider>
       <EmployeeProvider>

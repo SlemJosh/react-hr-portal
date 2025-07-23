@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { useAuth } from '../../context/AuthContext';
+import { toast } from 'react-toastify';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ export default function Signup() {
     e.preventDefault();
     const { firstName, lastName, email, password, role } = formData;
 
+    // Input validation
     if (!firstName || !lastName || !email || !password) {
       setError('Please fill in all fields.');
       return;
@@ -44,34 +46,46 @@ export default function Signup() {
       return;
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
+
+    // Check if user already exists
     const users = JSON.parse(localStorage.getItem('users')) || [];
-    const existing = users.find((u) => u.email === email);
-    if (existing) {
+    const existingUser = users.find((u) => u.email === normalizedEmail);
+    if (existingUser) {
       setError('User with this email already exists.');
       return;
     }
 
-    const newUser = { firstName, lastName, email, password, role };
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
+    // Add to "users"
+    const newUser = {
+      firstName,
+      lastName,
+      email: normalizedEmail,
+      password,
+      role,
+    };
+    localStorage.setItem('users', JSON.stringify([...users, newUser]));
 
-    // ⬇️ Add to employees list with proper fields
+    // Add to "employees" if not already present
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
-    const alreadyInEmployees = employees.find((e) => e.email === email);
+    const alreadyInEmployees = employees.find((e) => e.email === normalizedEmail);
 
     if (!alreadyInEmployees) {
       const newEmployee = {
         firstName,
         lastName,
-        email,
+        email: normalizedEmail,
         role,
         department: 'To Be Assigned',
       };
       localStorage.setItem('employees', JSON.stringify([...employees, newEmployee]));
     }
 
-    login(firstName, lastName, role, email);
+    // Simulate login and redirect
+    login(firstName, lastName, role, normalizedEmail);
     setLoading(true);
+
+    toast.success('Signup successful! Logging you in...');
 
     setTimeout(() => {
       navigate(role === 'hr' ? '/hr' : '/employee');

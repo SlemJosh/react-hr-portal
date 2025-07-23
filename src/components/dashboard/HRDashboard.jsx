@@ -12,6 +12,11 @@ import { formatRole } from '../../utils/roleUtils';
 export default function HRDashboard() {
   const { user, logout } = useAuth();
 
+  const handleResetData = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
+
   return (
     <Container className="mt-5">
       <Row className="justify-content-center">
@@ -36,7 +41,12 @@ export default function HRDashboard() {
                 </Link>
               </div>
 
-              <div className="text-center">
+              <div className="d-flex justify-content-center gap-2 flex-wrap">
+                {user?.email === "carol@hr.com" && (
+                  <Button variant="outline-secondary" onClick={handleResetData}>
+                    ♻️ Reset Demo Data
+                  </Button>
+                )}
                 <Button variant="outline-danger" onClick={logout}>
                   Logout
                 </Button>
