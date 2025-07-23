@@ -11,7 +11,7 @@ import { useEmployeeContext } from "../../context/EmployeeContext"; // ✅ Conte
 
 export default function AddEmployee() {
   const navigate = useNavigate();
-  const { addEmployee } = useEmployeeContext(); // ✅ Pull context action
+  const { addEmployee } = useEmployeeContext();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -25,16 +25,25 @@ export default function AddEmployee() {
 
   const [error, setError] = useState("");
 
-  const handleChange = (e) => {
+  const handleChange = (event) => {
+    const { name, value } = event.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const { firstName, lastName, email, role, department, title, password } = formData;
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const {
+      firstName,
+      lastName,
+      email,
+      role,
+      department,
+      title,
+      password,
+    } = formData;
 
     if (!firstName || !lastName || !email || !role) {
       setError("Please fill in all required fields.");
@@ -42,10 +51,12 @@ export default function AddEmployee() {
     }
 
     const normalizedEmail = email.trim().toLowerCase();
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const employees = JSON.parse(localStorage.getItem("employees")) || [];
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    
+    const userExists = users.find(
+      (u) => u.email.toLowerCase() === normalizedEmail
+    );
 
-    const userExists = users.find((u) => u.email.toLowerCase() === normalizedEmail);
     if (userExists) {
       setError("A user with this email already exists.");
       return;
@@ -68,10 +79,7 @@ export default function AddEmployee() {
       title,
     };
 
-    // Update users in localStorage
     localStorage.setItem("users", JSON.stringify([...users, newUser]));
-
-    // ✅ Update employees using context (auto syncs localStorage & state)
     addEmployee(newEmployee);
 
     toast.success(`✅ Added ${firstName} ${lastName} to the team!`);
@@ -87,7 +95,10 @@ export default function AddEmployee() {
         <Col md={8}>
           <h2 className="text-center mb-4">Add New Employee</h2>
           {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSubmit} className="border p-4 rounded bg-light shadow">
+          <Form
+            onSubmit={handleSubmit}
+            className="border p-4 rounded bg-light shadow"
+          >
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
