@@ -1,70 +1,110 @@
-# Getting Started with Create React App
+# HR Portal React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A role-based Human Resources portal built with React, Bootstrap, and localStorage. This mock HR system allows managers to add employees, track departments, and handle leave requests, simulating core functionality without requiring a backend.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🚀 Features
 
-### `npm start`
+- Secure login/signup with role-based dashboards
+- HR users can view, add, and manage employees
+- Employees can submit and cancel leave requests
+- Live updates via React Context API
+- Toast notifications for key actions
+- Responsive UI styled with Bootstrap 5
+- Preloaded users and reset functionality for demos
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🧪 Demo Credentials
 
-### `npm test`
+**Preloaded HR User**  
+- **Email:** `jean.grey@hrportal.com`  
+- **Password:** `admin123`  
+- **Note:** Jean Grey is the default HR Operations Manager and cannot be deleted.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Self-signup option**  
+- You can also **sign up** as a new HR user via the login page.
+- Select `Human Resources` as your role to unlock admin views.
 
-### `npm run build`
+**Added Employees**  
+- All employees created via the HR dashboard are assigned a default password: `temp1234`.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🛠 Tech Stack
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- React 18
+- React Router v6
+- React Bootstrap
+- React Toastify
+- Custom context/state management
+- LocalStorage (for persistence)
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 📂 Project Structure
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+src/
+├── components/
+│   ├── auth/             # Login & Signup
+│   ├── employee/         # LeaveRequest, EmployeeDashboard
+│   ├── hr/               # AddEmployee, ViewEmployees
+│   └── shared/           # Navbar, Footer, ProtectedRoute
+├── context/              # AuthContext and EmployeeContext
+├── data/                 # Default user/employee JSON
+├── App.jsx               # Main routing logic
+└── index.js              # Entry point
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## ✅ Current Functionality
 
-## Learn More
+- [x] Role-based routing and dashboard views
+- [x] HR can add employees with department and title
+- [x] Employees can submit/cancel leave requests
+- [x] Context API provides live updates without page refresh
+- [x] Toast alerts for success and errors
+- [x] Demo reset feature restores app to default state
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🔮 Future Improvements
 
-### Code Splitting
+- Assign employees unique IDs instead of using email as identifiers
+- Password reset system with security questions or email prompts
+- Password encryption (even in localStorage)
+- Search, sort, and filter options in employee directory
+- Add avatar or profile photo support
+- Persistent session with login retention
+- Leave request history and filters (e.g., by status or department)
+- Admin dashboard metrics (e.g., total employees, open requests)
+- Option to connect to real backend (MongoDB/Express) for production use
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## ⚠ Known Limitations
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- All data is stored in browser `localStorage`
+- No backend — intended as a front-end simulation
+- No real authentication/encryption
+- No accessibility audits completed
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 📜 License
 
-### Advanced Configuration
+This project is licensed under the [MIT License](./LICENSE).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## 👤 Contact
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+**Joshua Slem**  
+GitHub: [github.com/SlemJosh](https://github.com/SlemJosh)  
+_(aka GrayBear — a name used in design, gaming, and dev work)_
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
