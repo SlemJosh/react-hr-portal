@@ -17,7 +17,7 @@ export default function ForgotPassword() {
               Unfortunately, we don’t support password resets in this system. <br />
               Please contact your friendly neighborhood Human Resources representative.
             </p>
-            <p className="fw-bold">💼 HR Contact: Carol@ThisCompany.com</p>
+            <p className="fw-bold">💼 HR Contact: Jean.Grey@hrportal.com</p>
           </Card>
         </Col>
       </Row>

@@ -9,7 +9,7 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem('loggedInUser');
+    const storedUser = localStorage.getItem('currentUser');
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
@@ -29,14 +29,16 @@ export function AuthProvider({ children }) {
       title,
     };
 
-    console.log('🔐 Logging in with user:', userData); // Optional debug
+    // Optional debug
+    console.log('🔐 Logging in with user:', userData);
+
     setUser(userData);
-    localStorage.setItem('loggedInUser', JSON.stringify(userData));
+    localStorage.setItem('currentUser', JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('currentUser');
   };
 
   return (

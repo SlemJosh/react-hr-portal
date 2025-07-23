@@ -1,6 +1,7 @@
 // =======================
-// ViewEmployees.jsx
+// ViewEmployees.jsx (updated)
 // Description: Card view with modal editing + styled info badges + pending leave requests + fire employee
+// Now includes: Refresh fix on demo reset
 // =======================
 
 import React, { useState, useEffect } from "react";
@@ -56,6 +57,18 @@ export default function ViewEmployees() {
   };
 
   const handleFire = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+    if (selectedEmployee?.email === "Jean.Grey@hrportal.com") {
+      toast.info("Jean Grey cannot be fired. She is the Phoenix.");
+      return;
+    }
+
+    if (selectedEmployee?.email === currentUser?.email) {
+      toast.info("You can't fire yourself.");
+      return;
+    }
+
     toast.warning(
       <div>
         <p className="mb-1 fw-bold">
@@ -69,7 +82,23 @@ export default function ViewEmployees() {
             variant="danger"
             className="me-2"
             onClick={() => {
-              toast.dismiss(); // close first toast
+              const currentUser = JSON.parse(
+                localStorage.getItem("currentUser")
+              );
+
+              if (selectedEmployee?.email === "Jean.Grey@hrportal.com") {
+                toast.dismiss();
+                toast.info("Jean Grey cannot be fired. She is the Phoenix.");
+                return;
+              }
+
+              if (selectedEmployee?.email === currentUser?.email) {
+                toast.dismiss();
+                toast.info("You can't fire yourself.");
+                return;
+              }
+
+              toast.dismiss();
               toast.error(
                 <div>
                   <p className="mb-1 fw-bold">Are you really sure?</p>
@@ -83,6 +112,18 @@ export default function ViewEmployees() {
                       variant="danger"
                       className="me-2"
                       onClick={() => {
+                        if (selectedEmployee?.email === "Jean.Grey@hrportal.com") {
+                          toast.dismiss();
+                          toast.info("Jean Grey cannot be fired. She is the Phoenix.");
+                          return;
+                        }
+
+                        if (selectedEmployee?.email === currentUser?.email) {
+                          toast.dismiss();
+                          toast.info("You can't fire yourself.");
+                          return;
+                        }
+
                         setConfirmFire(true);
                         toast.dismiss();
                       }}
@@ -121,6 +162,11 @@ export default function ViewEmployees() {
 
   useEffect(() => {
     if (confirmFire && selectedEmployee?.email) {
+      if (selectedEmployee.email === "Jean.Grey@hrportal.com") {
+        toast.error("Jean Grey cannot be fired.");
+        return;
+      }
+
       removeEmployee(selectedEmployee.email);
       toast.success(
         `${selectedEmployee.firstName} ${selectedEmployee.lastName} has been fired.`
@@ -128,6 +174,20 @@ export default function ViewEmployees() {
       handleClose();
     }
   }, [confirmFire, selectedEmployee, removeEmployee]);
+
+  // ✅ NEW: Refresh fix after demo reset
+  useEffect(() => {
+    const handleStorageChange = () => {
+      // Force a manual state refresh (reloads employee context on reset)
+      window.location.reload();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   return (
     <Container className="mt-4">
@@ -196,7 +256,7 @@ export default function ViewEmployees() {
         </Row>
       )}
 
-      {/* Edit Modal */}
+      {/* Modal remains unchanged */}
       <Modal show={showModal} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Edit Employee</Modal.Title>

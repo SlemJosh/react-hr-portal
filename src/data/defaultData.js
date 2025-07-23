@@ -8,11 +8,11 @@
 
 export const defaultUsers = [
   {
-    email: "carol@company.com",
+    email: "jean.grey@hrportal.com",
     password: "admin123",
     role: "hr",
-    firstName: "Carol",
-    lastName: "Jarvis",
+    firstName: "Jean",
+    lastName: "Grey",
   },
   {
     email: "bruce@company.com",
@@ -120,9 +120,9 @@ export const defaultUsers = [
 
 export const defaultEmployees = [
   {
-    firstName: "Carol",
-    lastName: "Jarvis",
-    email: "carol@company.com",
+    firstName: "Jean",
+    lastName: "Grey",
+    email: "jean.grey@hrportal.com",
     department: "HR",
     title: "Operations Manager",
     role: "hr",
@@ -255,7 +255,7 @@ export const defaultLeaveRequests = [
     reason: "Family emergency",
     leaveType: "PTO",
     notes: "",
-    status: "Pending"
+    status: "Pending",
   },
   {
     id: "ae41cc8c-f6b4-407c-9ea6-72b5917f9485",
@@ -266,7 +266,7 @@ export const defaultLeaveRequests = [
     reason: "Vacation",
     leaveType: "PTO",
     notes: "",
-    status: "Pending"
+    status: "Pending",
   },
   {
     id: "12f9294c-e638-4c2a-a0a9-f73a1ab34ff1",
@@ -277,7 +277,7 @@ export const defaultLeaveRequests = [
     reason: "Conference",
     leaveType: "Business",
     notes: "",
-    status: "Pending"
+    status: "Pending",
   },
   {
     id: "d6a68f0e-3941-46a2-926f-2093e9d0a101",
@@ -288,7 +288,7 @@ export const defaultLeaveRequests = [
     reason: "Annual High Tea Festival",
     leaveType: "Personal",
     notes: "",
-    status: "Pending"
+    status: "Pending",
   },
   {
     id: "bb33f7d2-59cb-4e8e-b152-54b224b9be3a",
@@ -299,7 +299,7 @@ export const defaultLeaveRequests = [
     reason: "Wellness Retreat",
     leaveType: "PTO",
     notes: "",
-    status: "Pending"
+    status: "Pending",
   },
   {
     id: "3a58de7e-90e5-4484-882f-e51a03a0f9f2",
@@ -310,7 +310,7 @@ export const defaultLeaveRequests = [
     reason: "Got bored",
     leaveType: "UPT",
     notes: "",
-    status: "Pending"
+    status: "Pending",
   },
   {
     id: "457bfa11-93be-4ae6-aec1-eaee22dd8f76",
@@ -321,7 +321,7 @@ export const defaultLeaveRequests = [
     reason: "Lost a bet",
     leaveType: "UPT",
     notes: "",
-    status: "Pending"
+    status: "Pending",
   },
   {
     id: "9041c905-209f-4424-9f6e-dcc2f0c3d59f",
@@ -332,7 +332,7 @@ export const defaultLeaveRequests = [
     reason: "Mysterious rash",
     leaveType: "Sick",
     notes: "",
-    status: "Pending"
+    status: "Pending",
   },
   {
     id: "9ebd0c15-8a4d-4983-a6b0-9904e05c4e5e",
@@ -343,7 +343,7 @@ export const defaultLeaveRequests = [
     reason: "Unspecified mission",
     leaveType: "Business",
     notes: "",
-    status: "Pending"
+    status: "Pending",
   },
   {
     id: "2c5919ee-3de5-4d87-8701-15b7c964dcee",
@@ -354,6 +354,6 @@ export const defaultLeaveRequests = [
     reason: "Mental health day",
     leaveType: "PTO",
     notes: "",
-    status: "Pending"
-  }
+    status: "Pending",
+  },
 ];

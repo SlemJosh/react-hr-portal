@@ -1,6 +1,6 @@
 // =======================
 // EmployeeContext.jsx
-// Description: Provides global employee list state with localStorage sync (email as unique ID)
+// Description: Provides global employee list state with localStorage sync
 // =======================
 
 import React, { createContext, useReducer, useContext, useEffect } from "react";
@@ -39,9 +39,12 @@ function employeeReducer(state, action) {
       return { ...state, employees: updated };
     }
     case "REMOVE_EMPLOYEE": {
-      const updated = state.employees.filter(
-        (emp) => emp.email !== action.payload
-      );
+      if (action.payload === "Jean.Grey@hrportal.com") {
+        console.warn("Cannot remove Jean Grey from employee list.");
+        return state;
+      }
+
+      const updated = state.employees.filter((emp) => emp.email !== action.payload);
       localStorage.setItem("employees", JSON.stringify(updated));
       return { ...state, employees: updated };
     }
@@ -54,9 +57,20 @@ function employeeReducer(state, action) {
 export function EmployeeProvider({ children }) {
   const [state, dispatch] = useReducer(employeeReducer, initialState);
 
+  // 🔁 Sync state when localStorage changes (across tabs or after reset)
   useEffect(() => {
-    localStorage.setItem("employees", JSON.stringify(state.employees));
-  }, [state.employees]);
+    const handleStorageChange = (e) => {
+      if (e.key === "employees") {
+        const updated = JSON.parse(e.newValue);
+        if (updated) {
+          dispatch({ type: "SET_EMPLOYEES", payload: updated });
+        }
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   const addEmployee = (employee) => {
     dispatch({ type: "ADD_EMPLOYEE", payload: employee });
@@ -93,9 +107,7 @@ export function EmployeeProvider({ children }) {
 export function useEmployeeContext() {
   const context = useContext(EmployeeContext);
   if (!context) {
-    throw new Error(
-      "useEmployeeContext must be used within an EmployeeProvider"
-    );
+    throw new Error("useEmployeeContext must be used within an EmployeeProvider");
   }
   return context;
 }
