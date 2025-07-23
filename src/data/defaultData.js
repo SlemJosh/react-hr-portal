@@ -1,3 +1,7 @@
+// ==========================================
+// defaultData.js - Preloaded Users, Employees, and Leave Requests
+// ==========================================
+
 // =======================
 // Users for AuthContext
 // =======================
@@ -238,88 +242,118 @@ export const defaultEmployees = [
 ];
 
 // =======================
-// Preloaded Leave Requests
+// Preloaded Leave Requests (with REALISTIC UUIDs)
 // =======================
 
 export const defaultLeaveRequests = [
   {
-    id: "lr1",
+    id: "e21f3e6a-f7f5-44bb-bcd0-1a4c4e72caa1",
     employeeEmail: "bruce@company.com",
-    fromDate: "2025-08-15",
-    toDate: "2025-08-20",
+    employeeName: "Bruce Wayne",
+    startDate: "2025-08-15",
+    endDate: "2025-08-20",
     reason: "Family emergency",
-    status: "pending",
+    leaveType: "PTO",
+    notes: "",
+    status: "Pending"
   },
   {
-    id: "lr2",
+    id: "ae41cc8c-f6b4-407c-9ea6-72b5917f9485",
     employeeEmail: "clark@company.com",
-    fromDate: "2025-09-01",
-    toDate: "2025-09-05",
+    employeeName: "Clark Kent",
+    startDate: "2025-09-01",
+    endDate: "2025-09-05",
     reason: "Vacation",
-    status: "pending",
+    leaveType: "PTO",
+    notes: "",
+    status: "Pending"
   },
   {
-    id: "lr3",
+    id: "12f9294c-e638-4c2a-a0a9-f73a1ab34ff1",
     employeeEmail: "diana@company.com",
-    fromDate: "2025-08-25",
-    toDate: "2025-08-28",
+    employeeName: "Diana Prince",
+    startDate: "2025-08-25",
+    endDate: "2025-08-28",
     reason: "Conference",
-    status: "pending",
+    leaveType: "Business",
+    notes: "",
+    status: "Pending"
   },
   {
-    id: "lr4",
+    id: "d6a68f0e-3941-46a2-926f-2093e9d0a101",
     employeeEmail: "alfred@company.com",
-    fromDate: "2025-08-10",
-    toDate: "2025-08-12",
+    employeeName: "Alfred Pennyworth",
+    startDate: "2025-08-10",
+    endDate: "2025-08-12",
     reason: "Annual High Tea Festival",
-    status: "pending",
+    leaveType: "Personal",
+    notes: "",
+    status: "Pending"
   },
   {
-    id: "lr5",
+    id: "bb33f7d2-59cb-4e8e-b152-54b224b9be3a",
     employeeEmail: "wanda@company.com",
-    fromDate: "2025-08-30",
-    toDate: "2025-09-02",
+    employeeName: "Wanda Maximoff",
+    startDate: "2025-08-30",
+    endDate: "2025-09-02",
     reason: "Wellness Retreat",
-    status: "pending",
+    leaveType: "PTO",
+    notes: "",
+    status: "Pending"
   },
   {
-    id: "lr6",
+    id: "3a58de7e-90e5-4484-882f-e51a03a0f9f2",
     employeeEmail: "wade@company.com",
-    fromDate: "2025-08-01",
-    toDate: "2025-08-02",
+    employeeName: "Wade Wilson",
+    startDate: "2025-08-01",
+    endDate: "2025-08-02",
     reason: "Got bored",
-    status: "pending",
+    leaveType: "UPT",
+    notes: "",
+    status: "Pending"
   },
   {
-    id: "lr7",
+    id: "457bfa11-93be-4ae6-aec1-eaee22dd8f76",
     employeeEmail: "wade@company.com",
-    fromDate: "2025-08-04",
-    toDate: "2025-08-04",
+    employeeName: "Wade Wilson",
+    startDate: "2025-08-04",
+    endDate: "2025-08-04",
     reason: "Lost a bet",
-    status: "pending",
+    leaveType: "UPT",
+    notes: "",
+    status: "Pending"
   },
   {
-    id: "lr8",
+    id: "9041c905-209f-4424-9f6e-dcc2f0c3d59f",
     employeeEmail: "wade@company.com",
-    fromDate: "2025-08-10",
-    toDate: "2025-08-15",
+    employeeName: "Wade Wilson",
+    startDate: "2025-08-10",
+    endDate: "2025-08-15",
     reason: "Mysterious rash",
-    status: "pending",
+    leaveType: "Sick",
+    notes: "",
+    status: "Pending"
   },
   {
-    id: "lr9",
+    id: "9ebd0c15-8a4d-4983-a6b0-9904e05c4e5e",
     employeeEmail: "wade@company.com",
-    fromDate: "2025-09-03",
-    toDate: "2025-09-04",
+    employeeName: "Wade Wilson",
+    startDate: "2025-09-03",
+    endDate: "2025-09-04",
     reason: "Unspecified mission",
-    status: "pending",
+    leaveType: "Business",
+    notes: "",
+    status: "Pending"
   },
   {
-    id: "lr10",
+    id: "2c5919ee-3de5-4d87-8701-15b7c964dcee",
     employeeEmail: "wade@company.com",
-    fromDate: "2025-09-10",
-    toDate: "2025-09-11",
+    employeeName: "Wade Wilson",
+    startDate: "2025-09-10",
+    endDate: "2025-09-11",
     reason: "Mental health day",
-    status: "pending",
-  },
+    leaveType: "PTO",
+    notes: "",
+    status: "Pending"
+  }
 ];
