@@ -39,15 +39,20 @@ function employeeReducer(state, action) {
       return { ...state, employees: updated };
     }
     case "REMOVE_EMPLOYEE": {
-      if (action.payload === "Jean.Grey@hrportal.com") {
+      if (
+        action.payload?.toLowerCase() === "jean.grey@hrportal.com".toLowerCase()
+      ) {
         console.warn("Cannot remove Jean Grey from employee list.");
         return state;
       }
 
-      const updated = state.employees.filter((emp) => emp.email !== action.payload);
+      const updated = state.employees.filter(
+        (emp) => emp.email.toLowerCase() !== action.payload.toLowerCase()
+      );
       localStorage.setItem("employees", JSON.stringify(updated));
       return { ...state, employees: updated };
     }
+
     default:
       return state;
   }
@@ -107,7 +112,9 @@ export function EmployeeProvider({ children }) {
 export function useEmployeeContext() {
   const context = useContext(EmployeeContext);
   if (!context) {
-    throw new Error("useEmployeeContext must be used within an EmployeeProvider");
+    throw new Error(
+      "useEmployeeContext must be used within an EmployeeProvider"
+    );
   }
   return context;
 }

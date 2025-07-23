@@ -140,7 +140,7 @@ export default function Signup() {
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formPassword">
+              <Form.Group className="mb-3" controlId="formPasswo4rd">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                   type="password"

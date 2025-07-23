@@ -1,15 +1,17 @@
 // =======================
 // AddEmployee.jsx
-// Description: Add employee form with confirmation toast (via react-toastify)
+// Description: Add employee form with lowercase email normalization + toast + context update
 // =======================
 
 import React, { useState } from "react";
 import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"; // ✅ Toastify for consistent feedback
+import { toast } from "react-toastify";
+import { useEmployeeContext } from "../../context/EmployeeContext"; // ✅ Context hook
 
 export default function AddEmployee() {
   const navigate = useNavigate();
+  const { addEmployee } = useEmployeeContext(); // ✅ Pull context action
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -32,31 +34,45 @@ export default function AddEmployee() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { firstName, lastName, email, role, department, title, password } =
-      formData;
+    const { firstName, lastName, email, role, department, title, password } = formData;
 
     if (!firstName || !lastName || !email || !role) {
       setError("Please fill in all required fields.");
       return;
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
     const users = JSON.parse(localStorage.getItem("users")) || [];
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
 
-    const userExists = users.find((u) => u.email === email);
+    const userExists = users.find((u) => u.email.toLowerCase() === normalizedEmail);
     if (userExists) {
       setError("A user with this email already exists.");
       return;
     }
 
-    const newUser = { firstName, lastName, email, role, password };
-    const newEmployee = { firstName, lastName, email, role, department, title };
+    const newUser = {
+      firstName,
+      lastName,
+      email: normalizedEmail,
+      role,
+      password,
+    };
 
+    const newEmployee = {
+      firstName,
+      lastName,
+      email: normalizedEmail,
+      role,
+      department,
+      title,
+    };
+
+    // Update users in localStorage
     localStorage.setItem("users", JSON.stringify([...users, newUser]));
-    localStorage.setItem(
-      "employees",
-      JSON.stringify([...employees, newEmployee])
-    );
+
+    // ✅ Update employees using context (auto syncs localStorage & state)
+    addEmployee(newEmployee);
 
     toast.success(`✅ Added ${firstName} ${lastName} to the team!`);
 
@@ -71,10 +87,7 @@ export default function AddEmployee() {
         <Col md={8}>
           <h2 className="text-center mb-4">Add New Employee</h2>
           {error && <Alert variant="danger">{error}</Alert>}
-          <Form
-            onSubmit={handleSubmit}
-            className="border p-4 rounded bg-light shadow"
-          >
+          <Form onSubmit={handleSubmit} className="border p-4 rounded bg-light shadow">
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">

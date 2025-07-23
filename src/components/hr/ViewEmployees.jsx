@@ -112,9 +112,14 @@ export default function ViewEmployees() {
                       variant="danger"
                       className="me-2"
                       onClick={() => {
-                        if (selectedEmployee?.email === "Jean.Grey@hrportal.com") {
+                        if (
+                          selectedEmployee?.email?.toLowerCase() ===
+                          "jean.grey@hrportal.com"
+                        ) {
                           toast.dismiss();
-                          toast.info("Jean Grey cannot be fired. She is the Phoenix.");
+                          toast.info(
+                            "Jean Grey cannot be fired. She is the Phoenix."
+                          );
                           return;
                         }
 

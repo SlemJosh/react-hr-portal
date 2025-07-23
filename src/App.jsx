@@ -37,13 +37,16 @@ export default function App() {
     const users = localStorage.getItem("users");
     const employees = localStorage.getItem("employees");
     const leaveRequests = localStorage.getItem("leaveRequests");
+    const hasPreloaded = localStorage.getItem("preloaded");
 
-    // Only preload if any are missing (first load or after manual clear)
-    if (!users || !employees || !leaveRequests) {
+    if ((!users || !employees || !leaveRequests) && !hasPreloaded) {
       localStorage.setItem("users", JSON.stringify(defaultUsers));
       localStorage.setItem("employees", JSON.stringify(defaultEmployees));
       localStorage.setItem("leaveRequests", JSON.stringify(defaultLeaveRequests));
-      console.log("🟢 Default data successfully preloaded into localStorage.");
+      localStorage.setItem("preloaded", "true");
+
+      console.log("🟢 Default data preloaded. Reloading to sync app state...");
+      window.location.reload();
     } else {
       console.log("ℹ️ localStorage already contains user data. Skipping preload.");
     }
