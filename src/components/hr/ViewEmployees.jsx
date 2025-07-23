@@ -1,9 +1,9 @@
 // =======================
 // ViewEmployees.jsx
-// Description: Card view with modal editing + styled info badges + pending leave requests
+// Description: Card view with modal editing + styled info badges + pending leave requests + fire employee
 // =======================
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useEmployeeContext } from "../../context/EmployeeContext";
 import {
   Card,
@@ -16,17 +16,18 @@ import {
   Badge,
 } from "react-bootstrap";
 import { getDepartmentColor } from "../../utils/badgeUtils";
+import { toast } from "react-toastify";
 
 export default function ViewEmployees() {
-  const { employees, updateEmployee } = useEmployeeContext();
+  const { employees, updateEmployee, removeEmployee } = useEmployeeContext();
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [editForm, setEditForm] = useState({});
+  const [confirmFire, setConfirmFire] = useState(false);
 
-  // -- NEW: Get all leave requests from localStorage --
+  // Leave requests
   const leaveRequests = JSON.parse(localStorage.getItem("leaveRequests")) || [];
 
-  // -- NEW: Helper for pending count per employee --
   const getPendingCount = (email) =>
     leaveRequests.filter(
       (req) => req.employeeEmail === email && req.status === "Pending"
@@ -35,6 +36,7 @@ export default function ViewEmployees() {
   const handleClose = () => {
     setShowModal(false);
     setSelectedEmployee(null);
+    setConfirmFire(false);
   };
 
   const handleShow = (employee) => {
@@ -53,6 +55,80 @@ export default function ViewEmployees() {
     handleClose();
   };
 
+  const handleFire = () => {
+    toast.warning(
+      <div>
+        <p className="mb-1 fw-bold">
+          Are you sure you want to fire {selectedEmployee.firstName}{" "}
+          {selectedEmployee.lastName}?
+        </p>
+        <p className="mb-2 text-danger">This action cannot be undone.</p>
+        <div className="d-flex justify-content-end">
+          <Button
+            size="sm"
+            variant="danger"
+            className="me-2"
+            onClick={() => {
+              toast.dismiss(); // close first toast
+              toast.error(
+                <div>
+                  <p className="mb-1 fw-bold">Are you really sure?</p>
+                  <p className="mb-2 text-danger">
+                    This looks like it could be the end for{" "}
+                    {selectedEmployee.firstName} {selectedEmployee.lastName}.
+                  </p>
+                  <div className="d-flex justify-content-end">
+                    <Button
+                      size="sm"
+                      variant="danger"
+                      className="me-2"
+                      onClick={() => {
+                        setConfirmFire(true);
+                        toast.dismiss();
+                      }}
+                    >
+                      Yes, Fire Them
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => toast.dismiss()}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>,
+                {
+                  autoClose: false,
+                  closeOnClick: false,
+                }
+              );
+            }}
+          >
+            Confirm
+          </Button>
+          <Button size="sm" variant="secondary" onClick={() => toast.dismiss()}>
+            Cancel
+          </Button>
+        </div>
+      </div>,
+      {
+        autoClose: false,
+        closeOnClick: false,
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (confirmFire && selectedEmployee?.email) {
+      removeEmployee(selectedEmployee.email);
+      toast.success(
+        `${selectedEmployee.firstName} ${selectedEmployee.lastName} has been fired.`
+      );
+      handleClose();
+    }
+  }, [confirmFire, selectedEmployee, removeEmployee]);
+
   return (
     <Container className="mt-4">
       <h2 className="mb-4 text-center">Employee Directory</h2>
@@ -62,11 +138,14 @@ export default function ViewEmployees() {
       ) : (
         <Row xs={1} sm={2} md={3} lg={4} className="g-4">
           {employees.map((emp, index) => (
-            <Col key={index}>
+            <Col key={emp.email || index}>
               <Card
                 className="shadow-sm h-100 border border-success"
                 onClick={() => handleShow(emp)}
-                style={{ cursor: "pointer", transition: "transform 0.2s" }}
+                style={{
+                  cursor: "pointer",
+                  transition: "transform 0.2s",
+                }}
                 onMouseEnter={(e) =>
                   (e.currentTarget.style.transform = "scale(1.02)")
                 }
@@ -95,9 +174,10 @@ export default function ViewEmployees() {
 
                   <Card.Text>
                     <small>
-                      <strong>Email:</strong> {emp.email} <br />
+                      <strong>Email:</strong> {emp.email}
+                      <br />
                       <strong>Role:</strong>{" "}
-                      {emp.role === "hr" ? "Human Resources" : "Employee"}{" "}
+                      {emp.role === "hr" ? "Human Resources" : "Employee"}
                       <br />
                       <strong>Leave Requests:</strong>{" "}
                       {getPendingCount(emp.email) > 0 ? (
@@ -200,7 +280,7 @@ export default function ViewEmployees() {
                 <Button variant="outline-warning" size="sm" disabled>
                   🔁 Reset Password
                 </Button>
-                <Button variant="outline-danger" size="sm" disabled>
+                <Button variant="outline-danger" size="sm" onClick={handleFire}>
                   🔥 Fire Employee
                 </Button>
               </div>
