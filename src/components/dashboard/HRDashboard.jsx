@@ -44,7 +44,7 @@ export default function HRDashboard() {
               </div>
 
               <div className="d-flex justify-content-center gap-2 flex-wrap">
-                {user?.email === "jean.grey@hrportal.com" && (
+                {user?.email === "jean.grey@snb.team" && (
                   <Button variant="outline-secondary" onClick={handleResetData}>
                     ♻️ Reset Demo Data
                   </Button>

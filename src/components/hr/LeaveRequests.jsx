@@ -1,5 +1,5 @@
 // =======================
-// LeaveRequests.jsx (Compact + Scroll Fixed)
+// LeaveRequests.jsx (Hybrid Format)
 // =======================
 
 import React, { useEffect, useState } from 'react';
@@ -14,6 +14,7 @@ import {
   Alert,
   Form,
   Collapse,
+  ListGroup,
 } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 
@@ -150,7 +151,7 @@ export default function LeaveRequests() {
                                     <Card.Subtitle className="mb-1 text-muted" style={{ fontSize: '0.75rem' }}>
                                       {req.startDate} → {req.endDate}
                                     </Card.Subtitle>
-                                    <Card.Text className="mb-2">
+                                    <Card.Text className="mb-2 text-break">
                                       <strong>Reason:</strong> {req.reason}<br />
                                       {req.notes && (
                                         <span><strong>Notes:</strong> {req.notes}</span>
@@ -172,75 +173,46 @@ export default function LeaveRequests() {
                                 </Card>
                               </Col>
                             ))}
-
-                            {!showPendingOnly && handled.length > 0 && (
-                              <Col xs={12}>
-                                <div className="mt-3">
-                                  {tooManyHandled ? (
-                                    <>
-                                      <Button
-                                        variant="link"
-                                        size="sm"
-                                        className="p-0 mb-2"
-                                        onClick={() => toggleCollapse(email)}
-                                      >
-                                        {isCollapsed ? `Show ${handled.length} Past Requests...` : "Hide Past Requests"}
-                                      </Button>
-                                      <Collapse in={!isCollapsed || forceShowHandled}>
-                                        <div>
-                                          <Row xs={1} sm={2} md={3} className="g-2">
-                                            {handled.map(req => (
-                                              <Col key={req.id}>
-                                                <Card className="shadow-sm h-100 border border-secondary bg-light small-card">
-                                                  <Card.Body className="p-2" style={{ fontSize: '0.875rem' }}>
-                                                    <Card.Title className="mb-1">
-                                                      {req.leaveType} {getBadge(req.status)}
-                                                    </Card.Title>
-                                                    <Card.Subtitle className="mb-1 text-muted" style={{ fontSize: '0.75rem' }}>
-                                                      {req.startDate} → {req.endDate}
-                                                    </Card.Subtitle>
-                                                    <Card.Text className="mb-0">
-                                                      <strong>Reason:</strong> {req.reason}<br />
-                                                      {req.notes && (
-                                                        <span><strong>Notes:</strong> {req.notes}</span>
-                                                      )}
-                                                    </Card.Text>
-                                                  </Card.Body>
-                                                </Card>
-                                              </Col>
-                                            ))}
-                                          </Row>
-                                        </div>
-                                      </Collapse>
-                                    </>
-                                  ) : (
-                                    <Row xs={1} sm={2} md={3} className="g-2 mt-2">
-                                      {handled.map(req => (
-                                        <Col key={req.id}>
-                                          <Card className="shadow-sm h-100 border border-secondary bg-light small-card">
-                                            <Card.Body className="p-2" style={{ fontSize: '0.875rem' }}>
-                                              <Card.Title className="mb-1">
-                                                {req.leaveType} {getBadge(req.status)}
-                                              </Card.Title>
-                                              <Card.Subtitle className="mb-1 text-muted" style={{ fontSize: '0.75rem' }}>
-                                                {req.startDate} → {req.endDate}
-                                              </Card.Subtitle>
-                                              <Card.Text className="mb-0">
-                                                <strong>Reason:</strong> {req.reason}<br />
-                                                {req.notes && (
-                                                  <span><strong>Notes:</strong> {req.notes}</span>
-                                                )}
-                                              </Card.Text>
-                                            </Card.Body>
-                                          </Card>
-                                        </Col>
-                                      ))}
-                                    </Row>
-                                  )}
-                                </div>
-                              </Col>
-                            )}
                           </Row>
+
+                          {!showPendingOnly && handled.length > 0 && (
+                            <div className="mt-4">
+                              <h6 className="fw-bold">Past Requests</h6>
+                              {tooManyHandled && (
+                                <Button
+                                  variant="link"
+                                  size="sm"
+                                  className="p-0 mb-2"
+                                  onClick={() => toggleCollapse(email)}
+                                >
+                                  {isCollapsed ? `Show ${handled.length} Past Requests...` : "Hide Past Requests"}
+                                </Button>
+                              )}
+
+                              <Collapse in={!isCollapsed || forceShowHandled || !tooManyHandled}>
+                                <div>
+                                  <ListGroup variant="flush" className="border rounded bg-white px-2">
+                                    {handled.map(req => (
+                                      <ListGroup.Item key={req.id} className="py-2 px-2">
+                                        <div className="d-flex justify-content-between align-items-center">
+                                          <div className="fw-semibold">
+                                            {req.leaveType} ({req.startDate} → {req.endDate})
+                                          </div>
+                                          {getBadge(req.status)}
+                                        </div>
+                                        <div className="text-break" style={{ fontSize: '0.85rem' }}>
+                                          <strong>Reason:</strong> {req.reason}<br />
+                                          {req.notes && (
+                                            <span><strong>Notes:</strong> {req.notes}</span>
+                                          )}
+                                        </div>
+                                      </ListGroup.Item>
+                                    ))}
+                                  </ListGroup>
+                                </div>
+                              </Collapse>
+                            </div>
+                          )}
                         </Accordion.Body>
                       </Accordion.Item>
                     );
