@@ -1,13 +1,14 @@
 // =======================
 // HRDashboard.jsx
-// Description: Dashboard page for HR users (Bootstrap styled)
+// Description: Dashboard page for HR users (Styled with translucent background)
 // =======================
 
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
-import { Container, Row, Col, Button, Card } from 'react-bootstrap';
+import { Container, Row, Col, Button,} from 'react-bootstrap';
 import { formatRole } from '../../utils/roleUtils';
+import '../../styles/index.css';
 
 export default function HRDashboard() {
   const { user, logout } = useAuth();
@@ -18,16 +19,17 @@ export default function HRDashboard() {
   };
 
   return (
-    <Container className="mt-5">
-      <Row className="justify-content-center">
-        <Col md={8}>
-          <Card className="shadow p-4">
-            <Card.Body>
-              <h2 className="mb-3 text-center">HR Dashboard</h2>
-              <p className="text-center">
+    <div className="login-background">
+      <div className="login-overlay" />
+      <Container className="d-flex justify-content-center align-items-center min-vh-100 login-card-container">
+        <Row className="w-100 justify-content-center">
+          <Col md={8} lg={6}>
+            <div className="p-4 translucent-card text-center">
+              <h2 className="mb-3">HR Dashboard</h2>
+              <p>
                 Welcome, <strong>{user?.firstName} {user?.lastName}</strong>!
               </p>
-              <p className="text-center text-muted">Role: {formatRole(user?.role)}</p>
+              <p className="text-muted">Role: {formatRole(user?.role)}</p>
 
               <div className="d-flex justify-content-center gap-3 my-4 flex-wrap">
                 <Link to="/add-employee" className="btn btn-success">
@@ -51,10 +53,10 @@ export default function HRDashboard() {
                   Logout
                 </Button>
               </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 }

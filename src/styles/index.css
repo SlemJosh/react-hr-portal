@@ -10,6 +10,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa;
+  color: #212529;
 }
 
 code {
@@ -36,7 +38,7 @@ code {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* dark overlay */
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 0;
 }
 
@@ -50,16 +52,7 @@ code {
   backdrop-filter: blur(4px);
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-}
-
-/* ======================= */
-/* Navbar Logo Styling     */
-/* ======================= */
-
-.sb-navbar-logo {
-  max-height: 40px;
-  width: auto;
-  object-fit: contain;
+  animation: fadeIn 0.6s ease;
 }
 
 /* ======================= */
@@ -91,4 +84,82 @@ code {
   font-weight: 600;
   font-size: 1.25rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* ======================= */
+/* Dashboard Page Styling  */
+/* ======================= */
+
+.dashboard-background {
+  background: linear-gradient(to right, #f5f7fa, #c3cfe2);
+  min-height: 100vh;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.dashboard-button-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.dashboard-section-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.dashboard-subtext {
+  color: #6c757d;
+  font-size: 1rem;
+}
+
+/* Dashboard card entrance animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Utility fade-in */
+.animate__fadeIn {
+  animation: fadeIn 0.6s ease;
+}
+
+/* ======================= */
+/* Navbar Logo Styling     */
+/* ======================= */
+
+.sb-navbar-logo {
+  max-height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* ======================= */
+/* Modal Scroll Fix        */
+/* ======================= */
+
+.modal-body {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* ======================= */
+/* Button Enhancements     */
+/* ======================= */
+
+.btn {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
 }
