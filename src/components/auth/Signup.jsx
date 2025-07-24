@@ -6,10 +6,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
+import { useAuth } from "../../context/AuthContext"; // ✅ import login context
 import "../../styles/index.css";
 
 export default function Signup() {
   const navigate = useNavigate();
+  const { login } = useAuth(); // ✅ bring in login function
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -58,7 +60,11 @@ export default function Signup() {
       localStorage.setItem("employees", JSON.stringify([...employees, newEmployee]));
     }
 
-    navigate("/login");
+    // ✅ Set auth state in context
+    login(firstName, lastName, role, normalizedEmail);
+
+    // ✅ Redirect based on role
+    navigate(role === "hr" ? "/hr" : "/employee");
   };
 
   return (

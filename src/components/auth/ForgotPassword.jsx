@@ -3,9 +3,10 @@
 // Description: Styled placeholder with portal background and branding
 // =======================
 
-import React from 'react';
-import { Container, Row, Col, Card, Image } from 'react-bootstrap';
-import '../../styles/index.css';
+import React from "react";
+import { Container, Row, Col, Image } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import "../../styles/index.css";
 
 export default function ForgotPassword() {
   return (
@@ -32,6 +33,12 @@ export default function ForgotPassword() {
                   fluid
                 />
               </div>
+
+              <p className="mt-4">
+                <Link to="/" className="link-secondary">
+                  ← Back to Login
+                </Link>
+              </p>
             </div>
           </Col>
         </Row>
