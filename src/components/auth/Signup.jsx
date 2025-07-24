@@ -1,58 +1,33 @@
 // =======================
 // Signup.jsx
-// Description: Signup with localStorage + login + redirect + spinner
+// Description: Signup screen with background and translucent card styling
 // =======================
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Form, Button, Alert, Spinner } from 'react-bootstrap';
-import { useAuth } from '../../context/AuthContext';
-import { toast } from 'react-toastify';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
+import "../../styles/index.css";
 
 export default function Signup() {
   const navigate = useNavigate();
-  const { login } = useAuth();
 
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    role: 'employee',
-  });
-
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("employee");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { firstName, lastName, email, password, role } = formData;
 
-    // Input validation
-    if (!firstName || !lastName || !email || !password) {
-      setError('Please fill in all fields.');
-      return;
-    }
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const normalizedEmail = email.toLowerCase();
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long.');
-      return;
-    }
+    const existingUser = users.find((user) => user.email === normalizedEmail);
 
-    const normalizedEmail = email.trim().toLowerCase();
-
-    // Check if user already exists
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const existingUser = users.find((u) => u.email === normalizedEmail);
     if (existingUser) {
-      setError('User with this email already exists.');
+      setError("User already exists with this email.");
       return;
     }
 
@@ -64,112 +39,107 @@ export default function Signup() {
       password,
       role,
     };
-    localStorage.setItem('users', JSON.stringify([...users, newUser]));
+    localStorage.setItem("users", JSON.stringify([...users, newUser]));
 
     // Add to "employees" if not already present
-    const employees = JSON.parse(localStorage.getItem('employees')) || [];
+    const employees = JSON.parse(localStorage.getItem("employees")) || [];
     const alreadyInEmployees = employees.find((e) => e.email === normalizedEmail);
 
     if (!alreadyInEmployees) {
       const newEmployee = {
+        id: Date.now(),
         firstName,
         lastName,
         email: normalizedEmail,
         role,
-        department: 'To Be Assigned',
+        department: "To Be Assigned",
+        title: "",
       };
-      localStorage.setItem('employees', JSON.stringify([...employees, newEmployee]));
+      localStorage.setItem("employees", JSON.stringify([...employees, newEmployee]));
     }
 
-    // Simulate login and redirect
-    login(firstName, lastName, role, normalizedEmail);
-    setLoading(true);
-
-    toast.success('Signup successful! Logging you in...');
-
-    setTimeout(() => {
-      navigate(role === 'hr' ? '/hr' : '/employee');
-    }, 500);
+    navigate("/login");
   };
 
   return (
-    <Container className="mt-5">
-      <Row className="justify-content-center">
-        <Col md={6}>
-          <h2 className="text-center mb-4">Sign Up</h2>
+    <div className="login-background">
+      <div className="login-overlay" />
+      <Container className="d-flex justify-content-center align-items-center min-vh-100 login-card-container">
+        <Row className="w-100 justify-content-center">
+          <Col md={6} lg={5}>
+            <div className="p-4 translucent-card">
+              <h2 className="text-center mb-4">Create Account</h2>
+              <Form onSubmit={handleSubmit}>
+                {error && <Alert variant="danger">{error}</Alert>}
 
-          {loading ? (
-            <div className="text-center my-5">
-              <Spinner animation="border" role="status" />
-              <p className="mt-3">Redirecting to your dashboard...</p>
+                <Form.Group controlId="formFirstName">
+                  <Form.Label>First Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="formLastName" className="mt-3">
+                  <Form.Label>Last Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="formEmail" className="mt-3">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="formPassword" className="mt-3">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="formRole" className="mt-3">
+                  <Form.Label>Role</Form.Label>
+                  <Form.Select
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                  >
+                    <option value="employee">Employee</option>
+                    <option value="hr">Human Resources</option>
+                  </Form.Select>
+                </Form.Group>
+
+                <Button type="submit" className="mt-4 w-100" variant="primary">
+                  Sign Up
+                </Button>
+
+                <div className="mt-3 text-center">
+                  <p>
+                    Already have an account?{" "}
+                    <a href="/login" className="link-primary">
+                      Login here
+                    </a>
+                  </p>
+                </div>
+              </Form>
             </div>
-          ) : (
-            <Form onSubmit={handleSubmit} className="p-4 border rounded bg-light shadow">
-              {error && <Alert variant="danger">{error}</Alert>}
-
-              <Form.Group className="mb-3" controlId="formFirstName">
-                <Form.Label>First Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  placeholder="Enter your first name"
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formLastName">
-                <Form.Label>Last Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  placeholder="Enter your last name"
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formEmail">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Enter your email"
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formPasswo4rd">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Create a password"
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formRole">
-                <Form.Label>Role</Form.Label>
-                <Form.Select
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                >
-                  <option value="employee">Employee</option>
-                  <option value="hr">Human Resources</option>
-                </Form.Select>
-              </Form.Group>
-
-              <Button variant="success" type="submit" className="w-100">
-                Register
-              </Button>
-            </Form>
-          )}
-        </Col>
-      </Row>
-    </Container>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 }
