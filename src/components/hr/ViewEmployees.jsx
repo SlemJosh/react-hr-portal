@@ -1,6 +1,5 @@
 // =======================
-// ViewEmployees.jsx (Styled Version)
-// Description: Card view with modal editing + styled info badges + pending leave requests + fire employee
+// ViewEmployees.jsx (Pending Leave Live Refresh Version)
 // =======================
 
 import React, { useState, useEffect } from "react";
@@ -14,6 +13,7 @@ import {
   Modal,
   Form,
   Badge,
+  ListGroup,
 } from "react-bootstrap";
 import { getDepartmentColor } from "../../utils/badgeUtils";
 import { toast } from "react-toastify";
@@ -24,6 +24,7 @@ export default function ViewEmployees() {
   const [showModal, setShowModal] = useState(false);
   const [editForm, setEditForm] = useState({});
   const [confirmFire, setConfirmFire] = useState(false);
+  const [pendingRequests, setPendingRequests] = useState([]);
 
   const leaveRequests = JSON.parse(localStorage.getItem("leaveRequests")) || [];
 
@@ -36,11 +37,16 @@ export default function ViewEmployees() {
     setShowModal(false);
     setSelectedEmployee(null);
     setConfirmFire(false);
+    setPendingRequests([]);
   };
 
   const handleShow = (employee) => {
+    const filtered = leaveRequests.filter(
+      (req) => req.employeeEmail === employee.email && req.status === "Pending"
+    );
     setSelectedEmployee(employee);
     setEditForm({ ...employee });
+    setPendingRequests(filtered);
     setShowModal(true);
   };
 
@@ -54,6 +60,20 @@ export default function ViewEmployees() {
     handleClose();
   };
 
+  const handleStatusUpdate = (id, newStatus) => {
+    const all = JSON.parse(localStorage.getItem("leaveRequests")) || [];
+    const updated = all.map((req) =>
+      req.id === id ? { ...req, status: newStatus } : req
+    );
+    localStorage.setItem("leaveRequests", JSON.stringify(updated));
+    const refreshed = updated.filter(
+      (req) =>
+        req.employeeEmail === selectedEmployee.email &&
+        req.status === "Pending"
+    );
+    setPendingRequests(refreshed);
+    toast.success(`Leave request ${newStatus.toLowerCase()}!`);
+  };
   const handleFire = () => {
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
@@ -79,75 +99,7 @@ export default function ViewEmployees() {
             size="sm"
             variant="danger"
             className="me-2"
-            onClick={() => {
-              const currentUser = JSON.parse(
-                localStorage.getItem("currentUser")
-              );
-
-              if (selectedEmployee?.email === "Jean.Grey@hrportal.com") {
-                toast.dismiss();
-                toast.info("Jean Grey cannot be fired. She is the Phoenix.");
-                return;
-              }
-
-              if (selectedEmployee?.email === currentUser?.email) {
-                toast.dismiss();
-                toast.info("You can't fire yourself.");
-                return;
-              }
-
-              toast.dismiss();
-              toast.error(
-                <div>
-                  <p className="mb-1 fw-bold">Are you really sure?</p>
-                  <p className="mb-2 text-danger">
-                    This looks like it could be the end for{" "}
-                    {selectedEmployee.firstName} {selectedEmployee.lastName}.
-                  </p>
-                  <div className="d-flex justify-content-end">
-                    <Button
-                      size="sm"
-                      variant="danger"
-                      className="me-2"
-                      onClick={() => {
-                        if (
-                          selectedEmployee?.email?.toLowerCase() ===
-                          "jean.grey@hrportal.com"
-                        ) {
-                          toast.dismiss();
-                          toast.info(
-                            "Jean Grey cannot be fired. She is the Phoenix."
-                          );
-                          return;
-                        }
-
-                        if (selectedEmployee?.email === currentUser?.email) {
-                          toast.dismiss();
-                          toast.info("You can't fire yourself.");
-                          return;
-                        }
-
-                        setConfirmFire(true);
-                        toast.dismiss();
-                      }}
-                    >
-                      Yes, Fire Them
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => toast.dismiss()}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </div>,
-                {
-                  autoClose: false,
-                  closeOnClick: false,
-                }
-              );
-            }}
+            onClick={() => setConfirmFire(true)}
           >
             Confirm
           </Button>
@@ -177,16 +129,6 @@ export default function ViewEmployees() {
       handleClose();
     }
   }, [confirmFire, selectedEmployee, removeEmployee]);
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      window.location.reload();
-    };
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
 
   return (
     <div className="login-background">
@@ -329,6 +271,59 @@ export default function ViewEmployees() {
                     <option value="Dimensional R&D">Dimensional R&D</option>
                   </Form.Select>
                 </Form.Group>
+
+                {pendingRequests.length > 0 ? (
+                  <>
+                    <hr />
+                    <h6 className="mt-3">Pending Leave Requests</h6>
+                    <ListGroup className="mb-3">
+                      {pendingRequests.map((req) => (
+                        <ListGroup.Item key={req.id}>
+                          <div className="d-flex justify-content-between align-items-center mb-1">
+                            <div>
+                              <strong>{req.leaveType}</strong> <br />
+                              {req.startDate} → {req.endDate}
+                              <br />
+                              <small><strong>Reason:</strong> {req.reason}</small>
+                              {req.notes && (
+                                <>
+                                  <br />
+                                  <small><strong>Notes:</strong> {req.notes}</small>
+                                </>
+                              )}
+                            </div>
+                            <div className="d-flex gap-2">
+                              <Button
+                                variant="success"
+                                size="sm"
+                                onClick={() =>
+                                  handleStatusUpdate(req.id, "Approved")
+                                }
+                              >
+                                Approve
+                              </Button>
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                onClick={() =>
+                                  handleStatusUpdate(req.id, "Denied")
+                                }
+                              >
+                                Deny
+                              </Button>
+                            </div>
+                          </div>
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  </>
+                ) : (
+                  <>
+                    <hr />
+                    <p className="text-muted text-center">No pending leave requests.</p>
+                  </>
+                )}
+
                 <div className="d-flex justify-content-between">
                   <Button variant="outline-warning" size="sm" disabled>
                     🔁 Reset Password
