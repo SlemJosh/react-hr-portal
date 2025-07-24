@@ -1,112 +1,164 @@
-# HR Portal React App
+# HR Portal – React App
 
-A role-based Human Resources portal built with React, Bootstrap, and localStorage. This mock HR system allows managers to add employees, track departments, and handle leave requests, simulating core functionality without requiring a backend.
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)  
+![React](https://img.shields.io/badge/React-18-blue?logo=react)  
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5-purple?logo=bootstrap)  
+![Responsive](https://img.shields.io/badge/Responsive-Yes-brightgreen)  
+[![Live Demo](https://img.shields.io/badge/Live-Demo-green)](https://react-hr-portal.netlify.app)
 
----
+## 📋 Description
 
-## 🚀 Features
-
-- Secure login/signup with role-based dashboards
-- HR users can view, add, and manage employees
-- Employees can submit and cancel leave requests
-- Live updates via React Context API
-- Toast notifications for key actions
-- Responsive UI styled with Bootstrap 5
-- Preloaded users and reset functionality for demos
+HR Portal is a responsive, front-end simulation of a Human Resources system built with React, React Bootstrap, and localStorage. It allows HR users to manage employee records and handle leave requests, while employees can submit and track their own leave—all without needing a backend. Built as part of my full-stack development journey, this project demonstrates React fundamentals, component-based structure, context-driven state, and role-based routing.
 
 ---
 
-https://react-hr-portal.netlify.app/
+## 🌐 Live Demo
 
-## 🧪 Demo Credentials
+Check it out here:  
+🔗 https://react-hr-portal.netlify.app
+
+---
+
+## 📂 Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Features](#features)
+- [Demo Credentials](#demo-credentials)
+- [Screenshots 📸](#screenshots-)
+- [Technologies Used](#technologies-used)
+- [Project Structure](#project-structure)
+- [Future Development](#future-development)
+- [Known Limitations](#known-limitations)
+- [Author](#author)
+- [License](#license)
+
+---
+
+## 🛠 Installation
+
+To run locally:
+
+```bash
+git clone https://github.com/SlemJosh/hr-portal-react.git
+cd hr-portal-react
+npm install
+npm start
+```
+
+Make sure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed.
+
+---
+
+## ▶️ Usage
+
+- Login using demo credentials or sign up as a new HR user
+- HR users can:
+  - View and manage employee directory
+  - Add new employees (assigned default passwords)
+  - View and approve/cancel leave requests
+- Employees can:
+  - Submit leave requests
+  - Cancel pending requests
+- Use the **Reset Demo** button to restore the app to default data
+
+---
+
+## ✨ Features
+
+- Role-based login with protected routing
+- HR and Employee dashboards
+- Add/edit/delete employees (HR only)
+- Submit and manage leave requests (Employee only)
+- React Context API for real-time state sync
+- Responsive UI with Bootstrap cards and badges
+- Toast notifications for actions (via react-toastify)
+- Preloaded demo data and reset function
+
+---
+
+## 🔐 Demo Credentials
 
 **Preloaded HR User**  
-- **Email:** `jean.grey@hrportal.com`  
-- **Password:** `admin123`  
-- **Note:** Jean Grey is the default HR Operations Manager and cannot be deleted.
+- Email: `jean.grey@snb.team`  
+- Password: `admin123`  
+Jean Grey is the default HR Operations Manager and **cannot be deleted**.
 
-**Self-signup option**  
-- You can also **sign up** as a new HR user via the login page.
-- Select `Human Resources` as your role to unlock admin views.
+**Signup Option**  
+- You can sign up as an HR user via the login page.  
+  Be sure to choose `Human Resources` from the role dropdown to access HR features.
 
-**Added Employees**  
-- All employees created via the HR dashboard are assigned a default password: `temp1234`.
-
----
-
-## 🛠 Tech Stack
-
-- React 18
-- React Router v6
-- React Bootstrap
-- React Toastify
-- Custom context/state management
-- LocalStorage (for persistence)
+**Employee Accounts**  
+- Any new employees created via the HR dashboard are assigned a default password: `temp1234`.
 
 ---
 
-## 📂 Project Structure
+## 📸 Screenshots
+
+_Add screenshots here before final submission._
+
+---
+
+## 🧰 Technologies Used
+
+- React 18  
+- React Router v6  
+- React Bootstrap  
+- React Toastify  
+- JavaScript (ES6+)  
+- HTML/CSS  
+- LocalStorage  
+- Netlify (for deployment)
+
+---
+
+## 📁 Project Structure
 
 ```
 src/
 ├── components/
-│   ├── auth/             # Login & Signup
+│   ├── auth/             # Login & Signup forms
 │   ├── employee/         # LeaveRequest, EmployeeDashboard
 │   ├── hr/               # AddEmployee, ViewEmployees
 │   └── shared/           # Navbar, Footer, ProtectedRoute
 ├── context/              # AuthContext and EmployeeContext
-├── data/                 # Default user/employee JSON
-├── App.jsx               # Main routing logic
+├── data/                 # Default JSON user and employee data
+├── App.jsx               # Main routing and layout
 └── index.js              # Entry point
 ```
 
 ---
 
-## ✅ Current Functionality
+## 🚧 Future Development
 
-- [x] Role-based routing and dashboard views
-- [x] HR can add employees with department and title
-- [x] Employees can submit/cancel leave requests
-- [x] Context API provides live updates without page refresh
-- [x] Toast alerts for success and errors
-- [x] Demo reset feature restores app to default state
-
----
-
-## 🔮 Future Improvements
-
-- Assign employees unique IDs instead of using email as identifiers
-- Password reset system with security questions or email prompts
-- Password encryption (even in localStorage)
-- Search, sort, and filter options in employee directory
-- Add avatar or profile photo support
-- Persistent session with login retention
-- Leave request history and filters (e.g., by status or department)
-- Admin dashboard metrics (e.g., total employees, open requests)
-- Option to connect to real backend (MongoDB/Express) for production use
+- Unique ID generation for employees (not based on email)
+- Real password encryption & reset logic
+- Search, filter, and sort options in employee directory
+- Persistent sessions and login retention
+- Enhanced leave request filtering and history
+- Upload avatar or profile photos
+- Admin dashboard with charts/metrics
+- Integration with real backend (e.g. MongoDB + Express)
 
 ---
 
 ## ⚠ Known Limitations
 
-- All data is stored in browser `localStorage`
-- No backend — intended as a front-end simulation
-- No real authentication/encryption
-- No accessibility audits completed
+- All data stored in `localStorage`—no backend or encryption
+- No true authentication or password hashing
+- Not yet optimized for accessibility (no a11y audit)
 
 ---
 
-## 📜 License
+## 👤 Author
 
-This project is licensed under the [MIT License](./LICENSE).
-
----
-
-## 👤 Contact
-
-**Joshua Slem**  
-GitHub: [github.com/SlemJosh](https://github.com/SlemJosh)  
-_(aka GrayBear — a name used in design, gaming, and dev work)_
+**Joshua Grant Slem**  
+GitHub: [SlemJosh](https://github.com/SlemJosh)  
+Email: [joshua.slem@gmail.com](mailto:joshua.slem@gmail.com)  
+_(also known as GrayBear — in design, gaming, and dev circles)_
 
 ---
 
+## 📄 License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).

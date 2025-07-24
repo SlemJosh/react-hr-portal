@@ -38,7 +38,7 @@ export function getDepartmentColor(department) {
       return 'info';
 
     case 'To Be Assigned':
-      return 'light';
+      return 'secondary';
 
     default:
       return 'secondary'; // fallback for any unknown departments
