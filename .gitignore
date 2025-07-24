@@ -1,15 +1,14 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Common ignores for React project setup
 
 # dependencies
 /node_modules
-/.pnp
-.pnp.js
 
 # testing
 /coverage
 
 # production
 /build
+.netlify
 
 # misc
 .DS_Store
