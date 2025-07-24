@@ -1,6 +1,6 @@
 // =======================
 // AuthContext.js
-// Description: Provides authentication and role-based login context for the app with persistence
+// Description: Provides authentication and role-based login context for the app with persistence and session timeout
 // =======================
 
 import React, { createContext, useContext, useState } from 'react';
@@ -10,7 +10,20 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem('currentUser');
-    return storedUser ? JSON.parse(storedUser) : null;
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      const expirationTime = 1000 * 60 * 60 * 1; // 1 hour
+      const now = Date.now();
+
+      if (now - parsedUser.loginTime > expirationTime) {
+        console.log('🕒 Session expired, clearing stored user.');
+        localStorage.removeItem('currentUser');
+        return null;
+      }
+
+      return parsedUser;
+    }
+    return null;
   });
 
   const login = (firstName, lastName, role, email = '') => {
@@ -27,9 +40,9 @@ export function AuthProvider({ children }) {
       role,
       department,
       title,
+      loginTime: Date.now(), // timestamp for auto-expiry
     };
 
-    // Optional debug
     console.log('🔐 Logging in with user:', userData);
 
     setUser(userData);

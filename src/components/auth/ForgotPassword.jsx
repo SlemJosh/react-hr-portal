@@ -22,7 +22,7 @@ export default function ForgotPassword() {
                 <br />
                 Please contact your friendly neighborhood Human Resources representative.
               </p>
-              <p className="fw-bold mt-3">HR Contact: Jean.Grey@hrportal.com</p>
+              <p className="fw-bold mt-3">HR Contact: Jean.Grey@snb.team.com</p>
 
               <div className="mt-4">
                 <Image
