@@ -38,9 +38,8 @@ export function getDepartmentColor(department) {
       return 'info';
 
     case 'To Be Assigned':
-      return 'secondary';
-
     default:
-      return 'secondary'; // fallback for any unknown departments
+      return 'secondary'; // fallback for unknown or unassigned departments
   }
 }
+
