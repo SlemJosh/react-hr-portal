@@ -21,7 +21,7 @@ export default function AppNavbar() {
   const brandLink = user ? (user.role === "hr" ? "/hr" : "/employee") : "/";
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg">
+    <Navbar bg="dark" variant="dark" expand="lg" className="sticky-top sticky-nav-shadow">
       <Container className="d-flex justify-content-between align-items-center">
         {/* Left: Logo + Company Name */}
         <Navbar.Brand as={Link} to={brandLink} className="d-flex align-items-center">
