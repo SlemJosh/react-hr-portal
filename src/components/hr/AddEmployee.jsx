@@ -1,6 +1,6 @@
 // =======================
-// AddEmployee.jsx (Styled)
-// Description: Centered, translucent form with background and animation
+// AddEmployee.jsx
+// Description: HR form to add a new employee (centered with translucent styling)
 // =======================
 
 import React, { useState } from "react";
@@ -20,7 +20,7 @@ export default function AddEmployee() {
     role: "employee",
     department: "To Be Assigned",
     title: "",
-    password: "temp1234",
+    password: "temp1234", // Default password for new users
   });
 
   const [error, setError] = useState("");
@@ -35,6 +35,7 @@ export default function AddEmployee() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
     const {
       firstName,
       lastName,
@@ -82,7 +83,7 @@ export default function AddEmployee() {
     localStorage.setItem("users", JSON.stringify([...users, newUser]));
     addEmployee(newEmployee);
 
-    toast.success(`✅ Added ${firstName} ${lastName} to the team!`);
+    toast.success(`Added ${firstName} ${lastName} to the team.`);
 
     setTimeout(() => {
       navigate("/view-employees");
@@ -98,6 +99,7 @@ export default function AddEmployee() {
             <div className="p-4 translucent-card animate__fadeIn">
               <h2 className="text-center mb-4">Add New Employee</h2>
               {error && <Alert variant="danger">{error}</Alert>}
+
               <Form onSubmit={handleSubmit}>
                 <Row>
                   <Col md={6}>

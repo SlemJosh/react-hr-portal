@@ -1,14 +1,14 @@
 // =======================
 // HRDashboard.jsx
-// Description: Dashboard page for HR users (Styled with translucent background)
+// HR dashboard with navigation shortcuts and demo reset (Jean only)
 // =======================
 
-import React from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { Link } from 'react-router-dom';
-import { Container, Row, Col, Button,} from 'react-bootstrap';
-import { formatRole } from '../../utils/roleUtils';
-import '../../styles/index.css';
+import React from "react";
+import { useAuth } from "../../context/AuthContext";
+import { Link } from "react-router-dom";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import { formatRole } from "../../utils/roleUtils";
+import "../../styles/index.css";
 
 export default function HRDashboard() {
   const { user, logout } = useAuth();
@@ -33,20 +33,20 @@ export default function HRDashboard() {
 
               <div className="d-flex justify-content-center gap-3 my-4 flex-wrap">
                 <Link to="/add-employee" className="btn btn-success">
-                  ➕ Add Employee
+                  Add Employee
                 </Link>
                 <Link to="/view-employees" className="btn btn-info text-white">
-                  📋 View Employees
+                  View Employees
                 </Link>
                 <Link to="/leave-requests" className="btn btn-warning text-dark">
-                  🗂️ View Leave Requests
+                  Leave Requests
                 </Link>
               </div>
 
               <div className="d-flex justify-content-center gap-2 flex-wrap">
                 {user?.email === "jean.grey@snb.team" && (
                   <Button variant="outline-secondary" onClick={handleResetData}>
-                    ♻️ Reset Demo Data
+                    Reset Demo Data
                   </Button>
                 )}
                 <Button variant="outline-danger" onClick={logout}>

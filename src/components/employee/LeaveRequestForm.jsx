@@ -1,15 +1,15 @@
 // =======================
-// LeaveRequest.jsx
-// Description: Submit and view employee leave requests (with consistent dashboard styling)
+// LeaveRequestForm.jsx
+// Form to submit a new leave request (employee-only view)
 // =======================
 
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid"; // ✅ Unique ID generator
+import { v4 as uuidv4 } from "uuid";
 
-export default function LeaveRequest() {
+export default function LeaveRequestForm() {
   const { user: loggedInUser } = useAuth();
   const navigate = useNavigate();
 
@@ -46,7 +46,7 @@ export default function LeaveRequest() {
     e.preventDefault();
 
     if (!isAtLeast24HoursOut(formData.startDate)) {
-      toast.error("🚫 Start date must be at least 24 hours in the future!");
+      toast.error("Start date must be at least 24 hours in the future.");
       return;
     }
 
@@ -66,7 +66,7 @@ export default function LeaveRequest() {
     const updatedRequests = [...allRequests, newRequest];
     localStorage.setItem("leaveRequests", JSON.stringify(updatedRequests));
 
-    toast.success("✅ Leave request submitted!");
+    toast.success("Leave request submitted.");
     setFormData({
       startDate: "",
       endDate: "",

@@ -1,5 +1,6 @@
 // =======================
-// ViewEmployees.jsx (Pending Leave Live Refresh Version)
+// ViewEmployees.jsx
+// Description: HR view for managing employees, reviewing/editing details, handling pending leave requests, and firing employees.
 // =======================
 
 import React, { useState, useEffect } from "react";
@@ -20,6 +21,7 @@ import { toast } from "react-toastify";
 
 export default function ViewEmployees() {
   const { employees, updateEmployee, removeEmployee } = useEmployeeContext();
+
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [editForm, setEditForm] = useState({});
@@ -33,6 +35,7 @@ export default function ViewEmployees() {
       (req) => req.employeeEmail === email && req.status === "Pending"
     ).length;
 
+  // ===== Modal Controls =====
   const handleClose = () => {
     setShowModal(false);
     setSelectedEmployee(null);
@@ -50,6 +53,7 @@ export default function ViewEmployees() {
     setShowModal(true);
   };
 
+  // ===== Form Handlers =====
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEditForm((prev) => ({ ...prev, [name]: value }));
@@ -60,6 +64,7 @@ export default function ViewEmployees() {
     handleClose();
   };
 
+  // ===== Leave Request Status Actions =====
   const handleStatusUpdate = (id, newStatus) => {
     const all = JSON.parse(localStorage.getItem("leaveRequests")) || [];
     const updated = all.map((req) =>
@@ -74,6 +79,8 @@ export default function ViewEmployees() {
     setPendingRequests(refreshed);
     toast.success(`Leave request ${newStatus.toLowerCase()}!`);
   };
+
+  // ===== Firing Logic =====
   const handleFire = () => {
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
@@ -145,10 +152,7 @@ export default function ViewEmployees() {
                 <Card
                   className="shadow-sm h-100 border border-success translucent-card animate__fadeIn"
                   onClick={() => handleShow(emp)}
-                  style={{
-                    cursor: "pointer",
-                    transition: "transform 0.2s",
-                  }}
+                  style={{ cursor: "pointer", transition: "transform 0.2s" }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.transform = "scale(1.02)")
                   }
@@ -197,6 +201,7 @@ export default function ViewEmployees() {
           </Row>
         )}
 
+        {/* === Employee Edit Modal === */}
         <Modal show={showModal} onHide={handleClose} centered>
           <Modal.Header closeButton>
             <Modal.Title>Edit Employee</Modal.Title>
@@ -272,6 +277,7 @@ export default function ViewEmployees() {
                   </Form.Select>
                 </Form.Group>
 
+                {/* === Pending Leave List === */}
                 {pendingRequests.length > 0 ? (
                   <>
                     <hr />
@@ -320,10 +326,13 @@ export default function ViewEmployees() {
                 ) : (
                   <>
                     <hr />
-                    <p className="text-muted text-center">No pending leave requests.</p>
+                    <p className="text-muted text-center">
+                      No pending leave requests.
+                    </p>
                   </>
                 )}
 
+                {/* === Action Buttons === */}
                 <div className="d-flex justify-content-between">
                   <Button variant="outline-warning" size="sm" disabled>
                     🔁 Reset Password

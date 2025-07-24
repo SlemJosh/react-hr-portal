@@ -1,6 +1,6 @@
 // ============================
 // Navbar.jsx
-// Description: Navbar with role-based links and department badge
+// Role-based navigation bar with user info and department badge
 // ============================
 
 import React from "react";
@@ -23,7 +23,7 @@ export default function AppNavbar() {
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className="sticky-top sticky-nav-shadow">
       <Container className="d-flex justify-content-between align-items-center">
-        {/* Left: Logo + Company Name */}
+        {/* Logo + Brand */}
         <Navbar.Brand as={Link} to={brandLink} className="d-flex align-items-center">
           <img
             src="/assets/images/sbilogo.png"
@@ -34,7 +34,7 @@ export default function AppNavbar() {
           <span className="fw-bold">S&B Industries</span>
         </Navbar.Brand>
 
-        {/* Center: Navigation Links */}
+        {/* Center Nav Links */}
         <Nav className="mx-auto">
           {user?.role === "hr" && (
             <>
@@ -48,7 +48,7 @@ export default function AppNavbar() {
           )}
         </Nav>
 
-        {/* Right: User Info + Logout */}
+        {/* User Info + Logout / Auth Links */}
         <Nav className="d-flex align-items-center">
           {user ? (
             <>
