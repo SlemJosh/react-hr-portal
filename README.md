@@ -176,6 +176,7 @@ src/
 * Optional profile photo support
 * Admin dashboard with charts/metrics
 * Integration with real backend (e.g. MongoDB + Express)
+* Refactor shared page styling (e.g. background overlays) into reusable utility classes for better maintainability
 
 ---
 

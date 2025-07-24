@@ -1,17 +1,14 @@
 /* ======================= */
-/* index.css               */        
+/* index.css               */
 /* ======================= */
-
-
 
 /* ======================= */
 /* Global Styles           */
 /* ======================= */
-
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -20,14 +17,13 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
 }
-
 
 /* ======================= */
 /* Navbar Styling          */
 /* ======================= */
-
 .sb-navbar-logo {
   max-height: 40px;
   width: auto;
@@ -47,11 +43,9 @@ code {
   z-index: 1030;
 }
 
-
 /* ======================= */
 /* Login Page Styling      */
 /* ======================= */
-
 .login-background {
   background-image: url("https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1950&q=80");
   background-size: cover;
@@ -60,6 +54,31 @@ code {
   min-height: 100vh;
   position: relative;
 }
+
+/* ======================= */
+/* Fun Mode Office-Themed Backgrounds (Updated) */
+/* ======================= */
+.random-bg-1 {
+  background-image: url("https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1950&q=80");
+}
+
+.random-bg-2 {
+  background-image: url("https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1950&q=80");
+}
+
+.random-bg-3 {
+  background-image: url("https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?auto=format&fit=crop&w=1950&q=80");
+}
+
+.random-bg-4 {
+  background-image: url("https://images.unsplash.com/photo-1537498425277-c283d32ef9db?auto=format&fit=crop&w=1950&q=80");
+}
+
+.random-bg-5 {
+  background-image: url("https://images.unsplash.com/photo-1593642532400-2682810df593?auto=format&fit=crop&w=1950&q=80");
+}
+
+
 
 .login-overlay {
   position: absolute;
@@ -84,11 +103,9 @@ code {
   animation: fadeIn 0.6s ease;
 }
 
-
 /* ======================= */
 /* Login Intro Logo Card   */
 /* ======================= */
-
 .logo-overlay-card {
   background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
   border-radius: 12px;
@@ -116,11 +133,9 @@ code {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-
 /* ======================= */
 /* Dashboard Styling       */
 /* ======================= */
-
 .dashboard-background {
   background: linear-gradient(to right, #f5f7fa, #c3cfe2);
   min-height: 100vh;
@@ -147,11 +162,9 @@ code {
   font-size: 1rem;
 }
 
-
 /* ======================= */
 /* Leave Request Styling   */
 /* ======================= */
-
 .leave-background {
   background-image: url("https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1950&q=80");
   background-size: cover;
@@ -162,21 +175,17 @@ code {
   padding-bottom: 2rem;
 }
 
-
 /* ======================= */
 /* Modal Styling           */
 /* ======================= */
-
 .modal-body {
   max-height: 60vh;
   overflow-y: auto;
 }
 
-
 /* ======================= */
 /* Button Enhancements     */
 /* ======================= */
-
 .btn {
   transition: all 0.2s ease-in-out;
 }
@@ -185,11 +194,9 @@ code {
   transform: translateY(-1px);
 }
 
-
 /* ======================= */
 /* Animations              */
 /* ======================= */
-
 @keyframes fadeIn {
   from {
     opacity: 0;

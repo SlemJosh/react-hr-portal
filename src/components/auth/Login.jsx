@@ -3,10 +3,18 @@
 // Portal login screen with logo splash and form reveal
 // =======================
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { Form, Button, Container, Row, Col, Alert, Card } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Container,
+  Row,
+  Col,
+  Alert,
+  Card,
+} from "react-bootstrap";
 import "../../styles/index.css";
 
 export default function Login() {
@@ -18,6 +26,18 @@ export default function Login() {
   const [role, setRole] = useState("employee");
   const [error, setError] = useState("");
   const [showLoginForm, setShowLoginForm] = useState(false);
+
+  // Choose a random background class once per render
+  const backgroundClass = useMemo(() => {
+    const classes = [
+      "random-bg-1",
+      "random-bg-2",
+      "random-bg-3",
+      "random-bg-4",
+      "random-bg-5",
+    ];
+    return classes[Math.floor(Math.random() * classes.length)];
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -41,7 +61,7 @@ export default function Login() {
   };
 
   return (
-    <div className="login-background">
+    <div className={`login-background ${backgroundClass}`}>
       <div className="login-overlay" />
       <Container className="d-flex justify-content-center align-items-center min-vh-100 login-card-container">
         <Row className="w-100 justify-content-center">
@@ -56,7 +76,9 @@ export default function Login() {
                   src="/assets/images/sbilogo.png"
                   alt="S&B Industries Logo"
                 />
-                <p className="mt-3 logo-overlay-text">Click to Enter the Portal</p>
+                <p className="mt-3 logo-overlay-text">
+                  Click to Enter the Portal
+                </p>
               </Card>
             ) : (
               <div className="p-4 translucent-card">
@@ -97,7 +119,11 @@ export default function Login() {
                     </Form.Select>
                   </Form.Group>
 
-                  <Button variant="primary" type="submit" className="mt-4 w-100">
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    className="mt-4 w-100"
+                  >
                     Login
                   </Button>
 
