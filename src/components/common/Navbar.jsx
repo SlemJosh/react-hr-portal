@@ -23,9 +23,18 @@ export default function AppNavbar() {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container className="d-flex justify-content-between align-items-center">
-        <Navbar.Brand as={Link} to={brandLink}>HR Portal</Navbar.Brand>
+        {/* Left: Logo + Company Name */}
+        <Navbar.Brand as={Link} to={brandLink} className="d-flex align-items-center">
+          <img
+            src="/assets/images/sbilogo.png"
+            alt="S&B Logo"
+            height="36"
+            className="me-2 sb-navbar-logo"
+          />
+          <span className="fw-bold">S&B Industries</span>
+        </Navbar.Brand>
 
-        {/* Centered role-specific links */}
+        {/* Center: Navigation Links */}
         <Nav className="mx-auto">
           {user?.role === "hr" && (
             <>
@@ -39,14 +48,14 @@ export default function AppNavbar() {
           )}
         </Nav>
 
-        {/* Right aligned user info + logout */}
+        {/* Right: User Info + Logout */}
         <Nav className="d-flex align-items-center">
           {user ? (
             <>
               <Nav.Item className="text-white me-3">
                 <strong>
                   {user.firstName} {user.lastName}
-                </strong>{" "}
+                </strong>
                 {user.department && (
                   <Badge
                     bg={getDepartmentColor(user.department)}

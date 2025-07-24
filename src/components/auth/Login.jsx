@@ -1,12 +1,13 @@
 // =======================
 // Login.jsx
-// Description: Login screen to simulate authentication using email and password
+// Description: Login screen with initial logo overlay that reveals form on click
 // =======================
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Alert, Card } from "react-bootstrap";
+import "../../styles/index.css";
 
 export default function Login() {
   const { login } = useAuth();
@@ -16,6 +17,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("employee");
   const [error, setError] = useState("");
+  const [showLoginForm, setShowLoginForm] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,76 +36,90 @@ export default function Login() {
       return;
     }
 
-    // Updated to pass firstName and lastName separately
     login(user.firstName, user.lastName, user.role, user.email);
     navigate(user.role === "hr" ? "/hr" : "/employee");
   };
 
   return (
-    <Container className="mt-5">
-      <Row className="justify-content-center">
-        <Col md={6}>
-          <h2 className="text-center mb-4">Login</h2>
-          <Form
-            onSubmit={handleSubmit}
-            className="p-4 border rounded bg-light shadow"
-          >
-            {error && <Alert variant="danger">{error}</Alert>}
-
-            <Form.Group controlId="formEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group controlId="formPassword" className="mt-3">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group controlId="formRole" className="mt-3">
-              <Form.Label>Select Role</Form.Label>
-              <Form.Select
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
+    <div className="login-background">
+      <div className="login-overlay" />
+      <Container className="d-flex justify-content-center align-items-center min-vh-100 login-card-container">
+        <Row className="w-100 justify-content-center">
+          <Col md={6} lg={5}>
+            {!showLoginForm ? (
+              <Card
+                className="p-4 translucent-card text-center logo-overlay-card"
+                onClick={() => setShowLoginForm(true)}
+                role="button"
               >
-                <option value="employee">Employee</option>
-                <option value="hr">Human Resources</option>
-              </Form.Select>
-            </Form.Group>
+                <img
+                  src="/assets/images/sbilogo.png"
+                  alt="S&B Industries Logo"
+                />
+                <p className="mt-3 logo-overlay-text">Click to Enter the Portal</p>
+              </Card>
+            ) : (
+              <div className="p-4 translucent-card">
+                <h2 className="text-center mb-4">Login</h2>
+                <Form onSubmit={handleSubmit}>
+                  {error && <Alert variant="danger">{error}</Alert>}
 
-            <Button variant="primary" type="submit" className="mt-4 w-100">
-              Login
-            </Button>
+                  <Form.Group controlId="formEmail">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </Form.Group>
 
-            <div className="mt-3 text-center">
-              <p>
-                Don't have an account?{" "}
-                <a href="/signup" className="link-primary">
-                  Sign up here
-                </a>
-              </p>
+                  <Form.Group controlId="formPassword" className="mt-3">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control
+                      type="password"
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </Form.Group>
 
-              <p className="mt-2">
-                <a href="/forgot-password" className="link-secondary">
-                  Forgot your password? Click here
-                </a>
-              </p>
-            </div>
-          </Form>
-        </Col>
-      </Row>
-    </Container>
+                  <Form.Group controlId="formRole" className="mt-3">
+                    <Form.Label>Select Role</Form.Label>
+                    <Form.Select
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
+                    >
+                      <option value="employee">Employee</option>
+                      <option value="hr">Human Resources</option>
+                    </Form.Select>
+                  </Form.Group>
+
+                  <Button variant="primary" type="submit" className="mt-4 w-100">
+                    Login
+                  </Button>
+
+                  <div className="mt-3 text-center">
+                    <p>
+                      Don't have an account?{" "}
+                      <a href="/signup" className="link-primary">
+                        Sign up here
+                      </a>
+                    </p>
+                    <p className="mt-2">
+                      <a href="/forgot-password" className="link-secondary">
+                        Forgot your password? Click here
+                      </a>
+                    </p>
+                  </div>
+                </Form>
+              </div>
+            )}
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 }

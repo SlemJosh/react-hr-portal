@@ -12,8 +12,83 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Code font style */
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* ======================= */
+/* Login Page Background   */
+/* ======================= */
+
+.login-background {
+  background-image: url("https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1950&q=80");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  position: relative;
+}
+
+.login-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* dark overlay */
+  z-index: 0;
+}
+
+.login-card-container {
+  position: relative;
+  z-index: 1;
+}
+
+.translucent-card {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ======================= */
+/* Navbar Logo Styling     */
+/* ======================= */
+
+.sb-navbar-logo {
+  max-height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* ======================= */
+/* Login Intro Logo Card   */
+/* ======================= */
+
+.logo-overlay-card {
+  background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.4s ease;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo-overlay-card:hover {
+  transform: scale(1.03);
+}
+
+.logo-overlay-card img {
+  max-width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+}
+
+.logo-overlay-text {
+  color: #f8f9fa;
+  font-weight: 600;
+  font-size: 1.25rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }

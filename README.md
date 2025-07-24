@@ -16,6 +16,8 @@ A role-based Human Resources portal built with React, Bootstrap, and localStorag
 
 ---
 
+https://react-hr-portal.netlify.app/
+
 ## 🧪 Demo Credentials
 
 **Preloaded HR User**  
