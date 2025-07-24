@@ -1,6 +1,6 @@
 // =======================
 // LeaveRequest.jsx
-// Description: Submit and view employee leave requests (with unique ID per request)
+// Description: Submit and view employee leave requests (with consistent dashboard styling)
 // =======================
 
 import React, { useState } from "react";
@@ -79,77 +79,83 @@ export default function LeaveRequest() {
   };
 
   return (
-    <div className="container py-4">
-      <h2 id="leaveForm" className="mb-4">
-        Submit New Leave Request
-      </h2>
+    <div className="login-background">
+      <div className="login-overlay" />
+      <div className="container d-flex justify-content-center align-items-center min-vh-100 login-card-container">
+        <div className="card shadow-lg p-4 bg-light translucent-card" style={{ maxWidth: "700px", width: "100%" }}>
+          <h2 className="mb-4 text-center">Submit New Leave Request</h2>
 
-      <form
-        onSubmit={handleSubmit}
-        className="border p-4 rounded shadow-sm bg-light mb-5"
-      >
-        <div className="mb-3">
-          <label className="form-label">Start Date</label>
-          <input
-            type="date"
-            name="startDate"
-            className="form-control"
-            min={getTomorrowDate()}
-            value={formData.startDate}
-            onChange={handleChange}
-            required
-          />
+          <form onSubmit={handleSubmit}>
+            <div className="row">
+              <div className="mb-3 col-md-6">
+                <label className="form-label">Start Date</label>
+                <input
+                  type="date"
+                  name="startDate"
+                  className="form-control"
+                  min={getTomorrowDate()}
+                  value={formData.startDate}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="mb-3 col-md-6">
+                <label className="form-label">End Date (optional)</label>
+                <input
+                  type="date"
+                  name="endDate"
+                  className="form-control"
+                  min={formData.startDate || getTomorrowDate()}
+                  value={formData.endDate}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Leave Type</label>
+              <select
+                name="leaveType"
+                className="form-select"
+                value={formData.leaveType}
+                onChange={handleChange}
+              >
+                <option value="Vacation">Vacation</option>
+                <option value="Sick Leave">Sick Leave</option>
+                <option value="Paid Time Off">Paid Time Off</option>
+                <option value="UPT">Unpaid Time</option>
+              </select>
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Reason</label>
+              <textarea
+                name="reason"
+                className="form-control"
+                rows="2"
+                value={formData.reason}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Additional Notes (optional)</label>
+              <textarea
+                name="notes"
+                className="form-control"
+                rows="2"
+                value={formData.notes}
+                onChange={handleChange}
+              />
+            </div>
+
+            <button type="submit" className="btn btn-success w-100">
+              Submit Request
+            </button>
+          </form>
         </div>
-        <div className="mb-3">
-          <label className="form-label">End Date (optional)</label>
-          <input
-            type="date"
-            name="endDate"
-            className="form-control"
-            min={formData.startDate || getTomorrowDate()}
-            value={formData.endDate}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Leave Type</label>
-          <select
-            name="leaveType"
-            className="form-select"
-            value={formData.leaveType}
-            onChange={handleChange}
-          >
-            <option value="Vacation">Vacation</option>
-            <option value="Sick Leave">Sick Leave</option>
-            <option value="Paid Time Off">Paid Time Off</option>
-            <option value="UPT">Unpaid Time</option>
-          </select>
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Reason</label>
-          <textarea
-            name="reason"
-            className="form-control"
-            rows="2"
-            value={formData.reason}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Additional Notes (optional)</label>
-          <textarea
-            name="notes"
-            className="form-control"
-            rows="2"
-            value={formData.notes}
-            onChange={handleChange}
-          />
-        </div>
-        <button type="submit" className="btn btn-success">
-          Submit Request
-        </button>
-      </form>
+      </div>
     </div>
   );
 }
