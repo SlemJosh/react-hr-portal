@@ -5,21 +5,23 @@
 
 import React, { createContext, useReducer, useContext, useEffect } from "react";
 
-// Create Context
+// =======================
+// Context & Helpers
+// =======================
 const EmployeeContext = createContext();
 
-// Load from localStorage if available
 const loadInitialEmployees = () => {
   const stored = localStorage.getItem("employees");
   return stored ? JSON.parse(stored) : [];
 };
 
-// Initial State
 const initialState = {
   employees: loadInitialEmployees(),
 };
 
+// =======================
 // Reducer
+// =======================
 function employeeReducer(state, action) {
   switch (action.type) {
     case "ADD_EMPLOYEE": {
@@ -40,7 +42,7 @@ function employeeReducer(state, action) {
     }
     case "REMOVE_EMPLOYEE": {
       if (
-        action.payload?.toLowerCase() === "jean.grey@hrportal.com".toLowerCase()
+        action.payload?.toLowerCase() === "jean.grey@hrportal.com"
       ) {
         console.warn("Cannot remove Jean Grey from employee list.");
         return state;
@@ -58,11 +60,13 @@ function employeeReducer(state, action) {
   }
 }
 
-// Provider
+// =======================
+// Provider Component
+// =======================
 export function EmployeeProvider({ children }) {
   const [state, dispatch] = useReducer(employeeReducer, initialState);
 
-  // 🔁 Sync state when localStorage changes (across tabs or after reset)
+  // 🔁 Sync state when localStorage changes (cross-tab or reset)
   useEffect(() => {
     const handleStorageChange = (e) => {
       if (e.key === "employees") {
@@ -77,21 +81,17 @@ export function EmployeeProvider({ children }) {
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  const addEmployee = (employee) => {
+  const addEmployee = (employee) =>
     dispatch({ type: "ADD_EMPLOYEE", payload: employee });
-  };
 
-  const setEmployees = (employeeList) => {
+  const setEmployees = (employeeList) =>
     dispatch({ type: "SET_EMPLOYEES", payload: employeeList });
-  };
 
-  const updateEmployee = (updatedData) => {
+  const updateEmployee = (updatedData) =>
     dispatch({ type: "UPDATE_EMPLOYEE", payload: updatedData });
-  };
 
-  const removeEmployee = (email) => {
+  const removeEmployee = (email) =>
     dispatch({ type: "REMOVE_EMPLOYEE", payload: email });
-  };
 
   return (
     <EmployeeContext.Provider
@@ -108,7 +108,9 @@ export function EmployeeProvider({ children }) {
   );
 }
 
-// Hook
+// =======================
+// useEmployeeContext Hook
+// =======================
 export function useEmployeeContext() {
   const context = useContext(EmployeeContext);
   if (!context) {
