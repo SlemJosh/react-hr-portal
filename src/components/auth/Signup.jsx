@@ -1,17 +1,17 @@
 // =======================
 // Signup.jsx
-// Description: Signup screen with background and translucent card styling
+// Account creation form with styled layout and context login
 // =======================
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
-import { useAuth } from "../../context/AuthContext"; // ✅ import login context
+import { useAuth } from "../../context/AuthContext";
 import "../../styles/index.css";
 
 export default function Signup() {
   const navigate = useNavigate();
-  const { login } = useAuth(); // ✅ bring in login function
+  const { login } = useAuth();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -33,7 +33,7 @@ export default function Signup() {
       return;
     }
 
-    // Add to "users"
+    // Add to users
     const newUser = {
       firstName,
       lastName,
@@ -43,7 +43,7 @@ export default function Signup() {
     };
     localStorage.setItem("users", JSON.stringify([...users, newUser]));
 
-    // Add to "employees" if not already present
+    // Add to employees if not already present
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
     const alreadyInEmployees = employees.find((e) => e.email === normalizedEmail);
 
@@ -60,10 +60,8 @@ export default function Signup() {
       localStorage.setItem("employees", JSON.stringify([...employees, newEmployee]));
     }
 
-    // ✅ Set auth state in context
+    // Set auth state and redirect
     login(firstName, lastName, role, normalizedEmail);
-
-    // ✅ Redirect based on role
     navigate(role === "hr" ? "/hr" : "/employee");
   };
 

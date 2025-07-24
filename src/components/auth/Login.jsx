@@ -1,6 +1,6 @@
 // =======================
 // Login.jsx
-// Description: Login screen with initial logo overlay that reveals form on click
+// Portal login screen with logo splash and form reveal
 // =======================
 
 import React, { useState } from "react";
@@ -68,7 +68,7 @@ export default function Login() {
                     <Form.Label>Email</Form.Label>
                     <Form.Control
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder="Enter email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -79,7 +79,7 @@ export default function Login() {
                     <Form.Label>Password</Form.Label>
                     <Form.Control
                       type="password"
-                      placeholder="Enter your password"
+                      placeholder="Enter password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -87,7 +87,7 @@ export default function Login() {
                   </Form.Group>
 
                   <Form.Group controlId="formRole" className="mt-3">
-                    <Form.Label>Select Role</Form.Label>
+                    <Form.Label>Role</Form.Label>
                     <Form.Select
                       value={role}
                       onChange={(e) => setRole(e.target.value)}

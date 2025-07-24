@@ -1,6 +1,6 @@
 // =======================
 // ForgotPassword.jsx
-// Description: Styled placeholder with portal background and branding
+// Placeholder screen for password recovery info and HR contact
 // =======================
 
 import React from "react";
@@ -18,9 +18,9 @@ export default function ForgotPassword() {
             <div className="p-4 translucent-card text-center">
               <h3 className="mb-3">Forgot Your Password?</h3>
               <p className="text-muted">
-                Unfortunately, we don’t support password resets in this system.
+                Unfortunately, this system doesn’t support password resets.
                 <br />
-                Please contact your friendly neighborhood Human Resources representative.
+                Please contact your HR representative for help.
               </p>
               <p className="fw-bold mt-3">HR Contact: Jean.Grey@snb.team.com</p>
 
