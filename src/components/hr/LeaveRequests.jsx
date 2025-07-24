@@ -1,6 +1,5 @@
 // =======================
-// LeaveRequests.jsx
-// Description: HR master view with centered toggle & no empty employees in Pending Only mode
+// LeaveRequests.jsx (Compact + Scroll Fixed)
 // =======================
 
 import React, { useEffect, useState } from 'react';
@@ -22,7 +21,7 @@ export default function LeaveRequests() {
   const [grouped, setGrouped] = useState({});
   const [showPendingOnly, setShowPendingOnly] = useState(false);
   const [collapsedHandled, setCollapsedHandled] = useState({});
-  const [forceShowHandled, setForceShowHandled] = useState(false); // For "View All Past Requests" button
+  const [forceShowHandled, setForceShowHandled] = useState(false);
 
   useEffect(() => {
     loadRequests();
@@ -67,7 +66,6 @@ export default function LeaveRequests() {
     toast.success(`Request ${newStatus.toLowerCase()}!`);
   };
 
-  // Toggle for handled requests
   const toggleCollapse = (empKey) => {
     setCollapsedHandled((prev) => ({
       ...prev,
@@ -75,7 +73,6 @@ export default function LeaveRequests() {
     }));
   };
 
-  // Filter: Only show employees with pending requests if toggled on
   const employeesToShow = Object.entries(grouped).filter(([email, { requests }]) => {
     if (showPendingOnly) {
       return requests.some(r => r.status === "Pending");
@@ -83,169 +80,177 @@ export default function LeaveRequests() {
     return true;
   });
 
-  // If no pending, show a callout and an option to view history
   const noPending = showPendingOnly && employeesToShow.length === 0;
 
   return (
-    <Container className="mt-4">
-      <h2 className="text-center mb-2">Manage Leave Requests</h2>
-      <Alert variant="info" className="text-center mb-4">
-        Review, approve, or deny pending requests. Click an employee to view all their leave requests.
-      </Alert>
-      {/* Centered toggle */}
-      <div className="d-flex justify-content-center align-items-center mb-4">
-        <Form.Check
-          type="switch"
-          id="pending-only-switch"
-          label="Show Only Pending"
-          checked={showPendingOnly}
-          onChange={() => { setShowPendingOnly((prev) => !prev); setForceShowHandled(false); }}
-          className="me-2"
-        />
-      </div>
-      {noPending ? (
-        <div className="text-center my-5">
-          <h5 className="mb-3">🎉 No active pending leave requests at this time.</h5>
-          <Button
-            variant="outline-primary"
-            size="sm"
-            onClick={() => { setShowPendingOnly(false); setForceShowHandled(true); }}
-          >
-            View All Past Requests
-          </Button>
-        </div>
-      ) : employeesToShow.length === 0 ? (
-        <p>No leave requests found.</p>
-      ) : (
-        <Accordion defaultActiveKey={employeesToShow[0]?.[0] || ""} alwaysOpen>
-          {employeesToShow.map(([email, { info, requests }]) => {
-            const pending = requests.filter(r => r.status === "Pending");
-            const handled = requests.filter(r => r.status !== "Pending");
-            const tooManyHandled = handled.length > 10;
-            const isCollapsed = collapsedHandled[email] ?? true;
+    <div className="login-background" style={{ minHeight: "100vh", overflowY: "auto" }}>
+      <div className="login-overlay" />
+      <Container fluid className="py-5 login-card-container">
+        <Row className="justify-content-center">
+          <Col xs={12} md={10} lg={9}>
+            <div className="p-4 translucent-card animate__fadeIn">
+              <h2 className="text-center mb-2">Manage Leave Requests</h2>
+              <Alert variant="info" className="text-center mb-4">
+                Review, approve, or deny pending requests. Click an employee to view all their leave requests.
+              </Alert>
+              <div className="d-flex justify-content-center align-items-center mb-4">
+                <Form.Check
+                  type="switch"
+                  id="pending-only-switch"
+                  label="Show Only Pending"
+                  checked={showPendingOnly}
+                  onChange={() => {
+                    setShowPendingOnly((prev) => !prev);
+                    setForceShowHandled(false);
+                  }}
+                />
+              </div>
 
-            return (
-              <Accordion.Item eventKey={email} key={email}>
-                <Accordion.Header>
-                  <span className="fw-bold">{info.employeeName}</span>
-                  <Badge bg="secondary" className="ms-2">{email}</Badge>
-                  {pending.length > 0 && (
-                    <Badge bg="warning" text="dark" className="ms-2">
-                      {pending.length} Pending
-                    </Badge>
-                  )}
-                </Accordion.Header>
-                <Accordion.Body className="bg-light">
-                  <Row xs={1} md={2} className="g-3">
-                    {/* Pending Requests */}
-                    {pending.map((req) => (
-                      <Col key={req.id}>
-                        <Card className="shadow-sm h-100 border border-primary">
-                          <Card.Body>
-                            <Card.Title>
-                              {req.leaveType} {getBadge(req.status)}
-                            </Card.Title>
-                            <Card.Subtitle className="mb-2 text-muted">
-                              {req.startDate} → {req.endDate}
-                            </Card.Subtitle>
-                            <Card.Text>
-                              <strong>Reason:</strong> {req.reason}<br />
-                              {req.notes && (
-                                <span><strong>Notes:</strong> {req.notes}</span>
-                              )}
-                            </Card.Text>
-                            <div className="d-flex gap-2">
-                              <Button
-                                variant="success"
-                                size="sm"
-                                onClick={() => updateStatus(req.id, 'Approved')}
-                              >Approve</Button>
-                              <Button
-                                variant="danger"
-                                size="sm"
-                                onClick={() => updateStatus(req.id, 'Denied')}
-                              >Deny</Button>
-                            </div>
-                          </Card.Body>
-                        </Card>
-                      </Col>
-                    ))}
+              {noPending ? (
+                <div className="text-center my-5">
+                  <h5 className="mb-3">🎉 No active pending leave requests at this time.</h5>
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    onClick={() => { setShowPendingOnly(false); setForceShowHandled(true); }}
+                  >
+                    View All Past Requests
+                  </Button>
+                </div>
+              ) : employeesToShow.length === 0 ? (
+                <p>No leave requests found.</p>
+              ) : (
+                <Accordion defaultActiveKey={employeesToShow[0]?.[0] || ""} alwaysOpen>
+                  {employeesToShow.map(([email, { info, requests }]) => {
+                    const pending = requests.filter(r => r.status === "Pending");
+                    const handled = requests.filter(r => r.status !== "Pending");
+                    const tooManyHandled = handled.length > 10;
+                    const isCollapsed = collapsedHandled[email] ?? true;
 
-                    {/* Handled Requests (collapsed if >10) */}
-                    {!showPendingOnly && handled.length > 0 && (
-                      <Col xs={12}>
-                        <div>
-                          {tooManyHandled ? (
-                            <>
-                              <Button
-                                variant="link"
-                                size="sm"
-                                className="p-0 mb-2"
-                                onClick={() => toggleCollapse(email)}
-                              >
-                                {isCollapsed ? `Show ${handled.length} Past Requests...` : "Hide Past Requests"}
-                              </Button>
-                              <Collapse in={!isCollapsed || forceShowHandled}>
-                                <div>
-                                  <Row xs={1} md={2} className="g-3">
-                                    {handled.map(req => (
-                                      <Col key={req.id}>
-                                        <Card className="shadow-sm h-100 border border-secondary bg-light">
-                                          <Card.Body>
-                                            <Card.Title>
-                                              {req.leaveType} {getBadge(req.status)}
-                                            </Card.Title>
-                                            <Card.Subtitle className="mb-2 text-muted">
-                                              {req.startDate} → {req.endDate}
-                                            </Card.Subtitle>
-                                            <Card.Text>
-                                              <strong>Reason:</strong> {req.reason}<br />
-                                              {req.notes && (
-                                                <span><strong>Notes:</strong> {req.notes}</span>
-                                              )}
-                                            </Card.Text>
-                                          </Card.Body>
-                                        </Card>
-                                      </Col>
-                                    ))}
-                                  </Row>
-                                </div>
-                              </Collapse>
-                            </>
-                          ) : (
-                            <Row xs={1} md={2} className="g-3 mt-2">
-                              {handled.map(req => (
-                                <Col key={req.id}>
-                                  <Card className="shadow-sm h-100 border border-secondary bg-light">
-                                    <Card.Body>
-                                      <Card.Title>
-                                        {req.leaveType} {getBadge(req.status)}
-                                      </Card.Title>
-                                      <Card.Subtitle className="mb-2 text-muted">
-                                        {req.startDate} → {req.endDate}
-                                      </Card.Subtitle>
-                                      <Card.Text>
-                                        <strong>Reason:</strong> {req.reason}<br />
-                                        {req.notes && (
-                                          <span><strong>Notes:</strong> {req.notes}</span>
-                                        )}
-                                      </Card.Text>
-                                    </Card.Body>
-                                  </Card>
-                                </Col>
-                              ))}
-                            </Row>
+                    return (
+                      <Accordion.Item eventKey={email} key={email}>
+                        <Accordion.Header>
+                          <span className="fw-bold">{info.employeeName}</span>
+                          <Badge bg="secondary" className="ms-2">{email}</Badge>
+                          {pending.length > 0 && (
+                            <Badge bg="warning" text="dark" className="ms-2">
+                              {pending.length} Pending
+                            </Badge>
                           )}
-                        </div>
-                      </Col>
-                    )}
-                  </Row>
-                </Accordion.Body>
-              </Accordion.Item>
-            );
-          })}
-        </Accordion>
-      )}
-    </Container>
+                        </Accordion.Header>
+                        <Accordion.Body className="bg-light">
+                          <Row xs={1} sm={2} md={3} className="g-2">
+                            {pending.map((req) => (
+                              <Col key={req.id}>
+                                <Card className="shadow-sm h-100 border border-primary small-card">
+                                  <Card.Body className="p-2" style={{ fontSize: '0.875rem' }}>
+                                    <Card.Title className="mb-1">
+                                      {req.leaveType} {getBadge(req.status)}
+                                    </Card.Title>
+                                    <Card.Subtitle className="mb-1 text-muted" style={{ fontSize: '0.75rem' }}>
+                                      {req.startDate} → {req.endDate}
+                                    </Card.Subtitle>
+                                    <Card.Text className="mb-2">
+                                      <strong>Reason:</strong> {req.reason}<br />
+                                      {req.notes && (
+                                        <span><strong>Notes:</strong> {req.notes}</span>
+                                      )}
+                                    </Card.Text>
+                                    <div className="d-flex gap-2 justify-content-between">
+                                      <Button
+                                        variant="success"
+                                        size="sm"
+                                        onClick={() => updateStatus(req.id, 'Approved')}
+                                      >Approve</Button>
+                                      <Button
+                                        variant="danger"
+                                        size="sm"
+                                        onClick={() => updateStatus(req.id, 'Denied')}
+                                      >Deny</Button>
+                                    </div>
+                                  </Card.Body>
+                                </Card>
+                              </Col>
+                            ))}
+
+                            {!showPendingOnly && handled.length > 0 && (
+                              <Col xs={12}>
+                                <div className="mt-3">
+                                  {tooManyHandled ? (
+                                    <>
+                                      <Button
+                                        variant="link"
+                                        size="sm"
+                                        className="p-0 mb-2"
+                                        onClick={() => toggleCollapse(email)}
+                                      >
+                                        {isCollapsed ? `Show ${handled.length} Past Requests...` : "Hide Past Requests"}
+                                      </Button>
+                                      <Collapse in={!isCollapsed || forceShowHandled}>
+                                        <div>
+                                          <Row xs={1} sm={2} md={3} className="g-2">
+                                            {handled.map(req => (
+                                              <Col key={req.id}>
+                                                <Card className="shadow-sm h-100 border border-secondary bg-light small-card">
+                                                  <Card.Body className="p-2" style={{ fontSize: '0.875rem' }}>
+                                                    <Card.Title className="mb-1">
+                                                      {req.leaveType} {getBadge(req.status)}
+                                                    </Card.Title>
+                                                    <Card.Subtitle className="mb-1 text-muted" style={{ fontSize: '0.75rem' }}>
+                                                      {req.startDate} → {req.endDate}
+                                                    </Card.Subtitle>
+                                                    <Card.Text className="mb-0">
+                                                      <strong>Reason:</strong> {req.reason}<br />
+                                                      {req.notes && (
+                                                        <span><strong>Notes:</strong> {req.notes}</span>
+                                                      )}
+                                                    </Card.Text>
+                                                  </Card.Body>
+                                                </Card>
+                                              </Col>
+                                            ))}
+                                          </Row>
+                                        </div>
+                                      </Collapse>
+                                    </>
+                                  ) : (
+                                    <Row xs={1} sm={2} md={3} className="g-2 mt-2">
+                                      {handled.map(req => (
+                                        <Col key={req.id}>
+                                          <Card className="shadow-sm h-100 border border-secondary bg-light small-card">
+                                            <Card.Body className="p-2" style={{ fontSize: '0.875rem' }}>
+                                              <Card.Title className="mb-1">
+                                                {req.leaveType} {getBadge(req.status)}
+                                              </Card.Title>
+                                              <Card.Subtitle className="mb-1 text-muted" style={{ fontSize: '0.75rem' }}>
+                                                {req.startDate} → {req.endDate}
+                                              </Card.Subtitle>
+                                              <Card.Text className="mb-0">
+                                                <strong>Reason:</strong> {req.reason}<br />
+                                                {req.notes && (
+                                                  <span><strong>Notes:</strong> {req.notes}</span>
+                                                )}
+                                              </Card.Text>
+                                            </Card.Body>
+                                          </Card>
+                                        </Col>
+                                      ))}
+                                    </Row>
+                                  )}
+                                </div>
+                              </Col>
+                            )}
+                          </Row>
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    );
+                  })}
+                </Accordion>
+              )}
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 }
