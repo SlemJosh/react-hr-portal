@@ -1,11 +1,11 @@
-// ==========================================
-// defaultData.js - Preloaded Users, Employees, and Leave Requests
-// ==========================================
+// ========================================================
+// defaultData.js – Preloaded Users, Employees, and Leave Requests
+// Used for demo resets and localStorage seeding
+// ========================================================
 
 // =======================
-// Users for AuthContext
+// Users for AuthContext (Login Credentials)
 // =======================
-
 export const defaultUsers = [
   {
     email: "jean.grey@snb.team",
@@ -115,9 +115,8 @@ export const defaultUsers = [
 ];
 
 // =======================
-// Employees for EmployeeContext
+// Employees for EmployeeContext (Directory Display)
 // =======================
-
 export const defaultEmployees = [
   {
     firstName: "Jean",
@@ -242,9 +241,8 @@ export const defaultEmployees = [
 ];
 
 // =======================
-// Preloaded Leave Requests (with REALISTIC UUIDs)
+// Preloaded Leave Requests (Used in LocalStorage sync)
 // =======================
-
 export const defaultLeaveRequests = [
   {
     id: "e21f3e6a-f7f5-44bb-bcd0-1a4c4e72caa1",
