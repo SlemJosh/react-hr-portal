@@ -60,7 +60,13 @@ Make sure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.co
 - Employees can:
   - Submit leave requests
   - Cancel pending requests
-- Use the **Reset Demo** button to restore the app to default data
+- Use the **Reset Demo** button (on Jean Grey’s dashboard) to restore the app to default data
+
+<details>
+<summary>🧩 Trouble seeing your dashboard?</summary>
+After signing up, be sure to select **"Human Resources"** as your department to unlock HR access.  
+If your dashboard doesn’t load correctly the first time, try refreshing the page.
+</details>
 
 ---
 
@@ -95,7 +101,23 @@ Jean Grey is the default HR Operations Manager and **cannot be deleted**.
 
 ## 📸 Screenshots
 
-_Add screenshots here before final submission._
+### 1. Login Screen  
+![Login Screen](public/assets/images/login.png)
+
+---
+
+### 2. HR Dashboard (Jean Grey)  
+![HR Dashboard](public/assets/images/hr-dashboard.png)
+
+---
+
+### 3. Employee Directory  
+![Employee List](public/assets/images/employee-list.png)
+
+---
+
+### 4. Leave Requests  
+![Leave Requests](public/assets/images/leave-requests.png)
 
 ---
 
